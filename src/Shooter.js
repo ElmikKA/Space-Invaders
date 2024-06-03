@@ -1,8 +1,5 @@
 import { Laser } from "./Laser.js";
 
-//TODO
-//Make a connection between the Laser and Shooter class
-
 export class Shooter {
     constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved) {
         this.squares = squares;
@@ -58,7 +55,7 @@ export class Shooter {
     //Adding shooter image
     shooterImage() {
         const shooterImage = document.createElement('img')
-        shooterImage.src = 'src/spaceship.png';
+        shooterImage.src = 'assets/images/spaceship.png';
         shooterImage.alt = 'Shooter';
         shooterImage.style.height= '80px';
         shooterImage.style.width = '80px';
@@ -77,13 +74,9 @@ export class Shooter {
 
     //Checks if the right keys are pushed
     initEvent() {
-        document.addEventListener('keydown', (e) => {
-            this.checkKeys(e, true)
-        });
+        document.addEventListener('keydown', (e) => this.checkKeys(e, true));
 
-        document.addEventListener('keyup', (e) => {
-            this.checkKeys(e, false)
-        });
+        document.addEventListener('keyup', (e) => this.checkKeys(e, false));
     }
 
     checkKeys(e, bool) {

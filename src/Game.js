@@ -1,6 +1,6 @@
 import { Invaders } from "./Invaders.js"
 import { Shooter } from "./Shooter.js"
-import { Laser } from "./Laser.js";
+import { GameTimer } from "./GameTimer.js";
 
 export class Game {
     constructor() {
@@ -43,6 +43,8 @@ export class Game {
             countdown--;
 
             if (countdown < 0) {
+                const gameTimer = new GameTimer();
+                gameTimer.start()
                 clearInterval(countdownInterval);
                 this.loader.style.visibility = 'hidden';
                 this.gameContent.style.visibility = 'visible';

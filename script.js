@@ -1,6 +1,6 @@
 
 
-import { Game } from "./Game.js";
+import { Game } from "./src/Game.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const bubblesContainer = document.getElementById('bubbles')

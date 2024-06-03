@@ -35,7 +35,7 @@ export class Invaders {
     // Creates the Invaders Image
     createInvaderImage() {
         const invaderImage = document.createElement('img');
-        invaderImage.src = 'src/invader.gif';
+        invaderImage.src = 'assets/images/invader.gif';
         invaderImage.alt = 'Invader';
         invaderImage.style.width = '80px';
         invaderImage.style.height = '53.33px';

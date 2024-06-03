@@ -192,11 +192,11 @@ body, html {
 }
 
 .laser {
-    background-image: url('src/laser.png');
+    background-image: url('assets/images/laser.png');
 }
 
 .boom {
-    background-image: url('src/explosion.png');
+    background-image: url('assets/images/explosion.png');
     background-size: cover;
     animation: explode 0.3s ease-out;
 }
