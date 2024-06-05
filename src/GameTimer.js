@@ -1,6 +1,4 @@
 
-
-
 export class GameTimer {
 
     constructor() {
@@ -13,13 +11,15 @@ export class GameTimer {
         this.startTime = Date.now();
         this.intervalId = setInterval(() => this.updateTimer(), 1000)
     }
+    
+    stop() {
+        this.endTime = Date.now();
+        clearInterval(this.intervalId) 
+    }
 
     updateTimer() {
         const currentTime = Date.now();
         const elapsedTime = Math.floor((currentTime - this.startTime) / 1000);
         document.querySelector('.game-timer').innerHTML = elapsedTime;
     }
-
-
-
 }
