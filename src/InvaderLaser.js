@@ -2,8 +2,8 @@ import { Explosion } from "./Explosion.js"
 export class InvaderLaser {
     static laserSpeed = 10
 
-    constructor(alienShooterIndex, alienInvaders, currentShooterIndex, squares, width) {
-        this.alienShooterIndex = alienShooterIndex
+    constructor(alienInvaders, currentShooterIndex, squares, width, aliveInvaders, alienInvadersCopy) {
+        this.alienShooterIndex = null
         this.alienInvaders = alienInvaders
         this.currentShooterIndex = currentShooterIndex
         this.squares = squares
@@ -14,9 +14,14 @@ export class InvaderLaser {
         this.currentLaserIndex = 0
         this.hp = document.querySelector('.hearts')
         this.dead = false
+        this.aliveInvaders = aliveInvaders
+        this.alienInvadersCopy = alienInvadersCopy
     }
 
     fire() {
+        const alienShooterIndex = Math.floor(Math.random() * this.aliveInvaders.length)
+        let alienNum = this.aliveInvaders[alienShooterIndex]
+        this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
         const alienCoords = this.alienInvaders[this.alienShooterIndex]
         this.currentLaserIndex = this.lowestIndex(alienCoords)
         this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
@@ -69,7 +74,6 @@ export class InvaderLaser {
         if (this.hp.childElementCount === 0) {
             new Explosion(this.squares[this.currentLaserIndex])
             this.dead = true
-            // alert('dead')
         }
     }
 

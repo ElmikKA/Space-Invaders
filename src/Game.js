@@ -71,6 +71,7 @@ export class Game {
         this.grid.innerHTML = ''; // Clear any previous grid
         for (let i = 0; i < this.width * this.width; i++) {
             const square = document.createElement('div');
+            square.innerHTML = i
             this.grid.appendChild(square);
         }
 
@@ -81,10 +82,10 @@ export class Game {
             30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
         ];
         let aliveInvaders = [...alienInvaders]
-        let alienInvaderCopy = [...alienInvaders]
+        let alienInvadersCopy = [...alienInvaders]
 
-        this.invaders = new Invaders(squares, alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, aliveInvaders, alienInvaderCopy);
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, alienInvaders, this.invadersRemoved, aliveInvaders);
+        this.invaders = new Invaders(squares, alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, aliveInvaders, alienInvadersCopy);
+        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, alienInvaders, this.invadersRemoved, aliveInvaders, alienInvadersCopy);
         this.invaders.move();
         this.shooter.initEvent();
     }

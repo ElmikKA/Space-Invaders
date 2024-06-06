@@ -1,7 +1,7 @@
 import { Laser } from "./Laser.js";
 
 export class Shooter {
-    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders) {
+    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders, alienInvadersCopy) {
         this.squares = squares;
         this.currentShooterIndex = currentShooterIndex;
         this.width = width;
@@ -16,6 +16,7 @@ export class Shooter {
         this.animate()
         this.shootLaser();
         this.aliveInvaders = aliveInvaders
+        this.alienInvadersCopy = alienInvadersCopy
     }
 
     //Moves the shooter
@@ -67,7 +68,7 @@ export class Shooter {
     shootLaser() {
         document.addEventListener('keydown', (e) => {
             if (e.key === ' ') {
-                const laser = new Laser(this.currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders)
+                const laser = new Laser(this.currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy)
                 laser.fire()
             }
         })

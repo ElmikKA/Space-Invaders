@@ -7,9 +7,9 @@ import { Explosion } from "./Explosion.js";
 export class Laser {
     static score = 0;
     static isLaserActive = false;
-    static laserSpeed = 3; //Number of frames to skip before moving
+    static laserSpeed = 1; //Number of frames to skip before moving
 
-    constructor(currentShooterIndex, width, squares, alienInvaders, aliensRemoved, aliveInvaders) {
+    constructor(currentShooterIndex, width, squares, alienInvaders, aliensRemoved, aliveInvaders, alienInvadersCopy) {
         this.currentLaserIndex = currentShooterIndex;
         this.width = width;
         this.squares = squares;
@@ -18,6 +18,7 @@ export class Laser {
         this.reqFrameId = null;
         this.frameCount = 0;
         this.aliveInvaders = aliveInvaders
+        this.alienInvadersCopy = alienInvadersCopy
     }
 
     moveLaser() {
@@ -69,8 +70,14 @@ export class Laser {
     addRemovedInvadersIndex() {
         const alienRemoveIndex = this.alienInvaders.indexOf(this.currentLaserIndex)
         this.aliensRemoved.push(alienRemoveIndex)
-        const aliveIndex = this.aliveInvaders.indexOf(alienRemoveIndex)
+        const aliveNum = this.alienInvadersCopy[alienRemoveIndex]
+        const aliveIndex = this.aliveInvaders.indexOf(aliveNum)
+        // console.log(aliveIndex)
+
+
         this.aliveInvaders.splice(aliveIndex, 1)
+        console.log(this.aliensRemoved)
+        console.log(this.aliveInvaders)
     }
 
     //Updates score

@@ -12,7 +12,7 @@ export class Invaders {
         this.direction = 1;
         this.goingRight = true;
         this.lastMoveTime = 0;
-        this.moveInterval = 100;
+        this.moveInterval = 1000;
         this.reqFrameId = null;
         this.aliveInvaders = aliveInvaders
         this.alienInvadersCopy = alienInvadersCopy
@@ -137,10 +137,7 @@ export class Invaders {
     }
     //picks a random alive invader and shoots a laser
     shootLaser() {
-        const alienShooterIndex = Math.floor(Math.random() * this.aliveInvaders.length)
-        let alienNum = this.aliveInvaders[alienShooterIndex]
-        let alienIndex = this.alienInvadersCopy.indexOf(alienNum)
-        const iLazer = new InvaderLaser(alienIndex, this.alienInvaders, this.currentShooterIndex, this.squares, this.width)
+        const iLazer = new InvaderLaser(this.alienInvaders, this.currentShooterIndex, this.squares, this.width, this.aliveInvaders, this.alienInvadersCopy)
         iLazer.fire()
     }
 }
