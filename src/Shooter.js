@@ -1,7 +1,7 @@
 import { Laser } from "./Laser.js";
 
 export class Shooter {
-    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved) {
+    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders) {
         this.squares = squares;
         this.currentShooterIndex = currentShooterIndex;
         this.width = width;
@@ -15,6 +15,7 @@ export class Shooter {
         this.addShooter(); // This ensures that the shooter image is added at the start of the game
         this.animate()
         this.shootLaser();
+        this.aliveInvaders = aliveInvaders
     }
 
     //Moves the shooter
@@ -25,22 +26,22 @@ export class Shooter {
         if (now - this.lastMoveTime < 100) return;  // Minimum 100 ms between moves
         this.lastMoveTime = now;
         this.removeShooter()
-        if(this.movingLeft && this.currentShooterIndex % this.width !== 0) {
+        if (this.movingLeft && this.currentShooterIndex % this.width !== 0) {
             this.currentShooterIndex -= 1;
         }
-        if(this.movingRight && this.currentShooterIndex % this.width < this.width -1) {
+        if (this.movingRight && this.currentShooterIndex % this.width < this.width - 1) {
             this.currentShooterIndex += 1;
         }
         this.addShooter()
     }
-    
+
     //Removing Shooter
     removeShooter() {
         //removes the shooter class
         this.squares[this.currentShooterIndex].classList.remove('shooter');
         //Removes the shooterImage
         const shooterImage = this.squares[this.currentShooterIndex].querySelector('img')
-        if(shooterImage) {
+        if (shooterImage) {
             this.squares[this.currentShooterIndex].removeChild(shooterImage)
         }
     }
@@ -51,13 +52,13 @@ export class Shooter {
         const shooterImage = this.shooterImage()
         this.squares[this.currentShooterIndex].appendChild(shooterImage)
     }
-    
+
     //Adding shooter image
     shooterImage() {
         const shooterImage = document.createElement('img')
         shooterImage.src = 'assets/images/spaceship.png';
         shooterImage.alt = 'Shooter';
-        shooterImage.style.height= '80px';
+        shooterImage.style.height = '80px';
         shooterImage.style.width = '80px';
         return shooterImage;
     }
@@ -65,8 +66,8 @@ export class Shooter {
     //Connects to the Laser class, when space is been pushed the the shooter will shoot a laser
     shootLaser() {
         document.addEventListener('keydown', (e) => {
-            if(e.key === ' ') {
-                const laser = new Laser(this.currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved)
+            if (e.key === ' ') {
+                const laser = new Laser(this.currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders)
                 laser.fire()
             }
         })
@@ -80,7 +81,7 @@ export class Shooter {
     }
 
     checkKeys(e, bool) {
-        if(e.key === 'ArrowLeft') {
+        if (e.key === 'ArrowLeft') {
             this.movingLeft = bool;
         } else if (e.key === 'ArrowRight') {
             this.movingRight = bool;

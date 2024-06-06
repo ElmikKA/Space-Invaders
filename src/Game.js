@@ -80,9 +80,11 @@ export class Game {
             15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
             30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
         ];
+        let aliveInvaders = [...alienInvaders]
+        let alienInvaderCopy = [...alienInvaders]
 
-        this.invaders = new Invaders(squares, alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen);
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, alienInvaders, this.invadersRemoved);
+        this.invaders = new Invaders(squares, alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, aliveInvaders, alienInvaderCopy);
+        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, alienInvaders, this.invadersRemoved, aliveInvaders);
         this.invaders.move();
         this.shooter.initEvent();
     }

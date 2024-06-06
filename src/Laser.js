@@ -9,26 +9,27 @@ export class Laser {
     static isLaserActive = false;
     static laserSpeed = 3; //Number of frames to skip before moving
 
-    constructor(currentShooterIndex, width, squares, alienInvaders, aliensRemoved) {
+    constructor(currentShooterIndex, width, squares, alienInvaders, aliensRemoved, aliveInvaders) {
         this.currentLaserIndex = currentShooterIndex;
         this.width = width;
         this.squares = squares;
         this.alienInvaders = alienInvaders;
         this.aliensRemoved = aliensRemoved;
         this.reqFrameId = null;
-        this.frameCount = 0; 
+        this.frameCount = 0;
+        this.aliveInvaders = aliveInvaders
     }
 
     moveLaser() {
         this.squares[this.currentLaserIndex].classList.remove('laser')
         this.currentLaserIndex -= this.width;
-        if(this.currentLaserIndex >= 0) {
+        if (this.currentLaserIndex >= 0) {
             this.squares[this.currentLaserIndex].classList.add('laser')
             this.checkCollision()
-            if(Laser.isLaserActive) {
+            if (Laser.isLaserActive) {
                 this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
             }
-        } else {   
+        } else {
             this.clearLaser()
             return;
         }
@@ -38,7 +39,7 @@ export class Laser {
         //Increment the frame counter
         this.frameCount++;
         // Only move the laser every Laser.laserSpeed frames
-        if(this.frameCount  % Laser.laserSpeed === 0) {
+        if (this.frameCount % Laser.laserSpeed === 0) {
             this.moveLaser();
         } else {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
@@ -47,7 +48,7 @@ export class Laser {
 
     //Checks if the Laser hits invader
     checkCollision() {
-        if(this.squares[this.currentLaserIndex].classList.contains('invader')) {
+        if (this.squares[this.currentLaserIndex].classList.contains('invader')) {
             this.squares[this.currentLaserIndex].classList.remove('laser')
             this.removeInvader()
             new Explosion(this.squares[this.currentLaserIndex])
@@ -68,6 +69,8 @@ export class Laser {
     addRemovedInvadersIndex() {
         const alienRemoveIndex = this.alienInvaders.indexOf(this.currentLaserIndex)
         this.aliensRemoved.push(alienRemoveIndex)
+        const aliveIndex = this.aliveInvaders.indexOf(alienRemoveIndex)
+        this.aliveInvaders.splice(aliveIndex, 1)
     }
 
     //Updates score
@@ -89,10 +92,10 @@ export class Laser {
 
     //Cleares laser
     clearLaser() {
-        if(this.reqFrameId) {
+        if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null;
         }
         Laser.isLaserActive = false;
     }
-  }
+}
