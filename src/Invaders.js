@@ -19,6 +19,8 @@ export class Invaders {
         this.shooting = false
         this.laserSpeed = 10
         this.frequency = 50
+        this.lasers = new InvaderLaser(this.alienInvaders, this.currentShooterIndex, this.squares, this.width, this.aliveInvaders, this.alienInvadersCopy, this.laserSpeed, this.frequency)
+
     }
 
     // Adds invaders to the grid
@@ -64,7 +66,9 @@ export class Invaders {
         if (!this.shooting) {
             this.shootLaser()
         }
-        this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        if (this.reqFrameId) {
+            this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        }
     }
 
     //Remove invaders
@@ -121,10 +125,18 @@ export class Invaders {
             this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';
             this.result.textContent = 'YOU HAVE WON'
+            this.lasers.dead = true
             this.stop()
         }
 
         if (this.squares[this.currentShooterIndex].classList.contains('invader')) {
+            this.resultScreen.style.display = 'flex';
+            this.result.textContent = 'GAME OVER'
+            this.lasers.dead = true
+            this.stop()
+        }
+
+        if (this.lasers.dead) {
             this.resultScreen.style.display = 'flex';
             this.result.textContent = 'GAME OVER'
             this.stop()
@@ -139,8 +151,9 @@ export class Invaders {
     }
     //picks a random alive invader and shoots a laser
     shootLaser() {
-        const iLazer = new InvaderLaser(this.alienInvaders, this.currentShooterIndex, this.squares, this.width, this.aliveInvaders, this.alienInvadersCopy, this.laserSpeed, this.frequency)
-        iLazer.fire()
+        // this.lasers = new InvaderLaser(this.alienInvaders, this.currentShooterIndex, this.squares, this.width, this.aliveInvaders, this.alienInvadersCopy, this.laserSpeed, this.frequency)
+        this.lasers.fire()
         this.shooting = true
+
     }
 }

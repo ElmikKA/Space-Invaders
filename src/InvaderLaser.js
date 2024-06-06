@@ -28,10 +28,7 @@ export class InvaderLaser {
         this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
         const alienCoords = this.alienInvaders[this.alienShooterIndex]
         this.currentLaserIndex = this.lowestIndex(alienCoords)
-        console.log(this.squares[this.currentLaserIndex])
-        // this.laserInfo.coords = this.currentLaserIndex
         this.lasers.push({ coords: this.currentLaserIndex })
-        console.log(this.lasers)
         if (!this.reqFrameId && !this.dead) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
@@ -52,9 +49,7 @@ export class InvaderLaser {
     moveLaser() {
         let removeLaser = null
         for (let i = 0; i < this.lasers.length; i++) {
-            console.log('loop:', i)
             let laser = this.lasers[i]
-            console.log(laser.coords)
             if (laser.coords < 210) {
                 this.squares[laser.coords].classList.remove('laser')
                 laser.coords += this.width
@@ -74,7 +69,6 @@ export class InvaderLaser {
 
     checkCollision(laser) {
         if (this.squares[laser.coords].classList.contains('shooter')) {
-            // cancelAnimationFrame(this.reqFrameId)
             this.removeLaser(laser)
             this.removeHp(laser)
             return true

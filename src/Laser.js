@@ -72,12 +72,7 @@ export class Laser {
         this.aliensRemoved.push(alienRemoveIndex)
         const aliveNum = this.alienInvadersCopy[alienRemoveIndex]
         const aliveIndex = this.aliveInvaders.indexOf(aliveNum)
-        // console.log(aliveIndex)
-
-
         this.aliveInvaders.splice(aliveIndex, 1)
-        console.log(this.aliensRemoved)
-        console.log(this.aliveInvaders)
     }
 
     //Updates score
