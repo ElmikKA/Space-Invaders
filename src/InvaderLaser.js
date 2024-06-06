@@ -1,8 +1,7 @@
 import { Explosion } from "./Explosion.js"
 export class InvaderLaser {
-    static laserSpeed = 10
 
-    constructor(alienInvaders, currentShooterIndex, squares, width, aliveInvaders, alienInvadersCopy) {
+    constructor(alienInvaders, currentShooterIndex, squares, width, aliveInvaders, alienInvadersCopy, laserSpeed, frequency) {
         this.alienShooterIndex = null
         this.alienInvaders = alienInvaders
         this.currentShooterIndex = currentShooterIndex
@@ -16,7 +15,12 @@ export class InvaderLaser {
         this.dead = false
         this.aliveInvaders = aliveInvaders
         this.alienInvadersCopy = alienInvadersCopy
+        this.lasers = []
+        this.laserInfo = { coords: 0 }
+        this.laserSpeed = laserSpeed
+        this.frequency = frequency
     }
+
 
     fire() {
         const alienShooterIndex = Math.floor(Math.random() * this.aliveInvaders.length)
@@ -24,56 +28,72 @@ export class InvaderLaser {
         this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
         const alienCoords = this.alienInvaders[this.alienShooterIndex]
         this.currentLaserIndex = this.lowestIndex(alienCoords)
-        this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+        console.log(this.squares[this.currentLaserIndex])
+        // this.laserInfo.coords = this.currentLaserIndex
+        this.lasers.push({ coords: this.currentLaserIndex })
+        console.log(this.lasers)
+        if (!this.reqFrameId && !this.dead) {
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+        }
     }
 
     animateLaser() {
         this.frameCount++
-        if (this.frameCount % InvaderLaser.laserSpeed === 0) {
-            console.log('moving laser')
+        if (this.frameCount % this.frequency === 0) {
+            this.fire()
+        }
+        if (this.frameCount % this.laserSpeed === 0) {
             this.moveLaser()
-        } else {
+        } else if (!this.dead) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 
     moveLaser() {
-        if (this.currentLaserIndex < 210) {
-            this.squares[this.currentLaserIndex].classList.remove('laser')
-            this.currentLaserIndex += this.width
-            this.squares[this.currentLaserIndex].classList.add('laser')
-            if (this.checkCollision()) {
-                cancelAnimationFrame(this.reqFrameId)
+        let removeLaser = null
+        for (let i = 0; i < this.lasers.length; i++) {
+            console.log('loop:', i)
+            let laser = this.lasers[i]
+            console.log(laser.coords)
+            if (laser.coords < 210) {
+                this.squares[laser.coords].classList.remove('laser')
+                laser.coords += this.width
+                this.squares[laser.coords].classList.add('laser')
+                this.checkCollision(laser)
             } else {
-                this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+                removeLaser = laser
             }
-        } else {
-            cancelAnimationFrame(this.reqFrameId)
-            this.removeLaser()
+        }
+        if (removeLaser) {
+            this.removeLaser(removeLaser)
+        }
+        if (!this.dead) {
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 
-    checkCollision() {
-        if (this.squares[this.currentLaserIndex].classList.contains('shooter')) {
-            cancelAnimationFrame(this.reqFrameId)
-            this.removeLaser()
-            this.removeHp()
+    checkCollision(laser) {
+        if (this.squares[laser.coords].classList.contains('shooter')) {
+            // cancelAnimationFrame(this.reqFrameId)
+            this.removeLaser(laser)
+            this.removeHp(laser)
             return true
         }
         return false
     }
 
-    removeLaser() {
-        this.squares[this.currentLaserIndex].classList.remove('laser')
+    removeLaser(laser) {
+        this.squares[laser.coords].classList.remove('laser')
+        this.lasers.shift()
     }
 
-    removeHp() {
+    removeHp(laser) {
         let child = this.hp.lastElementChild
         this.hp.removeChild(child)
-        console.log(this.hp.childElementCount)
         if (this.hp.childElementCount === 0) {
-            new Explosion(this.squares[this.currentLaserIndex])
+            new Explosion(this.squares[laser.coords])
             this.dead = true
+            cancelAnimationFrame(this.reqFrameId)
         }
     }
 
@@ -88,7 +108,6 @@ export class InvaderLaser {
                 }
             }
         }
-        lowestIndex += 15
         return lowestIndex
     }
 }

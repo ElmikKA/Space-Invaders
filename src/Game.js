@@ -71,7 +71,6 @@ export class Game {
         this.grid.innerHTML = ''; // Clear any previous grid
         for (let i = 0; i < this.width * this.width; i++) {
             const square = document.createElement('div');
-            square.innerHTML = i
             this.grid.appendChild(square);
         }
 
