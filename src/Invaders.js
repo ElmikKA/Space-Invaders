@@ -1,6 +1,6 @@
 import { InvaderLaser } from "./InvaderLaser.js";
 export class Invaders {
-    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, aliveInvaders, alienInvadersCopy) {
+    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, aliveInvaders, alienInvadersCopy, laserSpeed, frequency, movementSpeed, game) {
         this.squares = squares;
         this.alienInvaders = alienInvaders;
         this.invaderRemoved = invaderRemoved;
@@ -12,13 +12,17 @@ export class Invaders {
         this.direction = 1;
         this.goingRight = true;
         this.lastMoveTime = 0;
-        this.moveInterval = 1000;
         this.reqFrameId = null;
         this.aliveInvaders = aliveInvaders
         this.alienInvadersCopy = alienInvadersCopy
         this.shooting = false
-        this.laserSpeed = 10
-        this.frequency = 50
+        this.game = game
+
+        // stats
+        this.moveInterval = movementSpeed;
+        this.laserSpeed = laserSpeed
+        this.frequency = frequency
+
         this.lasers = new InvaderLaser(this.alienInvaders, this.currentShooterIndex, this.squares, this.width, this.aliveInvaders, this.alienInvadersCopy, this.laserSpeed, this.frequency)
 
     }
@@ -125,7 +129,8 @@ export class Invaders {
             this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';
             this.result.textContent = 'YOU HAVE WON'
-            this.lasers.dead = true
+            this.game.level += 1
+            console.log(this.game.level)
             this.stop()
         }
 
@@ -147,6 +152,7 @@ export class Invaders {
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null
+            this.lasers.stop()
         }
     }
     //picks a random alive invader and shoots a laser

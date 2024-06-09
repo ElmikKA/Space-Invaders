@@ -1,9 +1,9 @@
 import { Laser } from "./Laser.js";
 
 export class Shooter {
-    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders, alienInvadersCopy) {
+    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders, alienInvadersCopy, game) {
         this.squares = squares;
-        this.currentShooterIndex = currentShooterIndex;
+        this.currentShooterIndex = game.currentShooterIndex;
         this.width = width;
         this.alienInvaders = alienInvaders;
         this.invadersRemoved = invadersRemoved;
@@ -11,12 +11,19 @@ export class Shooter {
         this.score = 0;
         this.movingLeft = false;
         this.movingRight = false;
-        this.initEvent();
         this.addShooter(); // This ensures that the shooter image is added at the start of the game
         this.animate()
         this.shootLaser();
         this.aliveInvaders = aliveInvaders
         this.alienInvadersCopy = alienInvadersCopy
+        this.reqFrameId = null
+
+        this.boundCheckKeysDown = (e) => this.checkKeys(e, true)
+        this.boundCheckKeysUp = (e) => this.checkKeys(e, false)
+
+        this.initEvent();
+        this.laser = new Laser(currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy, this)
+
     }
 
     //Moves the shooter
@@ -66,19 +73,21 @@ export class Shooter {
 
     //Connects to the Laser class, when space is been pushed the the shooter will shoot a laser
     shootLaser() {
-        document.addEventListener('keydown', (e) => {
+        const keyShoot = (e) => {
             if (e.key === ' ') {
-                const laser = new Laser(this.currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy)
-                laser.fire()
+                // const laser = new Laser(this.currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy)
+                this.laser.fire()
             }
-        })
+        }
+        document.addEventListener('keydown', keyShoot)
+        this.keyShoot = keyShoot
     }
 
     //Checks if the right keys are pushed
     initEvent() {
-        document.addEventListener('keydown', (e) => this.checkKeys(e, true));
+        document.addEventListener('keydown', this.boundCheckKeysDown);
 
-        document.addEventListener('keyup', (e) => this.checkKeys(e, false));
+        document.addEventListener('keyup', this.boundCheckKeysUp);
     }
 
     checkKeys(e, bool) {
@@ -92,6 +101,18 @@ export class Shooter {
     //Requesting AnimationFrame
     animate() {
         this.moveShooter();
-        requestAnimationFrame(() => this.animate())
+        this.reqFrameId = requestAnimationFrame(() => this.animate())
+    }
+
+    stop() {
+        if (this.reqFrameId) {
+            cancelAnimationFrame(this.reqFrameId)
+            this.reqFrameId = null
+            document.removeEventListener('keydown', this.keyShoot)
+            document.removeEventListener('keydown', this.boundCheckKeysDown)
+            document.removeEventListener('keydown', this.boundCheckKeysUp)
+
+            this.laser.stop()
+        }
     }
 }

@@ -9,8 +9,9 @@ export class Laser {
     static isLaserActive = false;
     static laserSpeed = 1; //Number of frames to skip before moving
 
-    constructor(currentShooterIndex, width, squares, alienInvaders, aliensRemoved, aliveInvaders, alienInvadersCopy) {
-        this.currentLaserIndex = currentShooterIndex;
+    constructor(currentShooterIndex, width, squares, alienInvaders, aliensRemoved, aliveInvaders, alienInvadersCopy, shooter) {
+        this.shooter = shooter
+        this.currentLaserIndex = shooter.currentShooterIndex;
         this.width = width;
         this.squares = squares;
         this.alienInvaders = alienInvaders;
@@ -88,6 +89,9 @@ export class Laser {
     fire() {
         if (Laser.isLaserActive) return; // Do not fire if a laser is already active
         Laser.isLaserActive = true; // Set the flag to true when a laser is fired
+
+        this.currentLaserIndex = this.shooter.currentShooterIndex;
+
         this.frameCount = 0;// Reset the frame count
         this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
     }
@@ -99,5 +103,13 @@ export class Laser {
             this.reqFrameId = null;
         }
         Laser.isLaserActive = false;
+    }
+
+    stop() {
+        if (this.reqFrameId) {
+            cancelAnimationFrame(this.reqFrameId)
+            this.reqFrameId = null
+        }
+        Laser.isLaserActive = false
     }
 }

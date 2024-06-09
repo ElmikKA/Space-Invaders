@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const bubble = document.createElement('span');
         const duration = Math.random() * 20 + 10; // Random duration between 10 and 30
         const delay = Math.random() * 5; // Random delay up to 5 seconds
-        
+
         bubble.style.setProperty('--i', duration);
         bubble.style.left = `${Math.random() * 100}vw`; // Position the bubble randomly along the width
         bubble.style.animationDelay = `${delay}s`; // Add random delay for each bubble

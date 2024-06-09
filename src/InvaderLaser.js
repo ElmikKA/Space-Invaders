@@ -104,4 +104,11 @@ export class InvaderLaser {
         }
         return lowestIndex
     }
+
+    stop() {
+        if (this.reqFrameId) {
+            cancelAnimationFrame(this.reqFrameId)
+            this.reqFrameId = null
+        }
+    }
 }
