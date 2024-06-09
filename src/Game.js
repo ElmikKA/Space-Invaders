@@ -13,7 +13,9 @@ export class Game {
         this.gameContent = document.querySelector('.game-content');
         this.gameContainer = document.querySelector('.game-container');
         this.restartButton = document.getElementById('restart-button');
+        this.nextLevel = document.getElementById('next-level')
         this.resultScreen = document.querySelector('.result-screen');
+
         this.result = document.querySelector('.result');
         this.currentShooterIndex = 202;
         this.width = 15;
@@ -34,8 +36,8 @@ export class Game {
         this.movementSpeed = 1000
 
         this.playButton.addEventListener('click', () => this.startGame())
-        this.restartButton.addEventListener('click', () => this.initializeGame())
-        // this.restartButton.addEventListener('click', () => window.location.reload())
+        this.restartButton.addEventListener('click', () => window.location.reload())
+        this.nextLevel.addEventListener('click', () => this.initializeGame())
     }
 
     startGame() {
@@ -86,24 +88,22 @@ export class Game {
         console.log(this.level)
         this.currentShooterIndex = 202
         Laser.isLaserActive = false
-        Laser.score = 0
-        switch (this.level) {
-            case 1:
-                console.log('level 1')
-                this.invaderLaserSpeed = 10
-                this.invaderFrequency = 50
-                this.movementSpeed = 1000
-                this.playLevel()
-                break
-            case 2:
-                console.log('level 2')
-                this.invaderLaserSpeed = 10
-                this.invaderFrequency = 30
-                this.movementSpeed = 750
-                this.playLevel()
-                break
+        if (this.level === 1) {
+            console.log('level 1')
+            this.invaderLaserSpeed = 10
+            this.invaderFrequency = 50
+            this.movementSpeed = 1000
+            this.playLevel()
         }
+        if (this.level > 1) {
+            console.log(`level`, this.level)
+            this.invaderLaserSpeed = (this.invaderLaserSpeed > 5) ? this.invaderLaserSpeed - 1 : (console.log('max laser speed'), this.invaderLaserSpeed)
+            this.invaderFrequency = (this.invaderFrequency > 10) ? this.invaderFrequency - 10 : (console.log('max firerate'), this.invaderFrequency)
+            this.movementSpeed = (this.movementSpeed > 500) ? this.movementSpeed - 250 : (console.log('max movement speed'), this.movementSpeed)
+            console.log(this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed)
+            this.playLevel()
 
+        }
     }
 
     restart() {
@@ -128,11 +128,13 @@ export class Game {
         }
 
         const squares = Array.from(document.querySelectorAll('.game-board div'));
+
         const alienInvaders = [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-            // 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-            // 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-        ];
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+            30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+        ]
+        // const alienInvaders = [6]
         this.invadersRemoved = []
         let aliveInvaders = [...alienInvaders]
         let alienInvadersCopy = [...alienInvaders]

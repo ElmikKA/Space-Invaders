@@ -96,6 +96,17 @@ html {
 }
 
 #restart-button {
+    margin: 5px;
+    font-size: 3em;
+    padding: 20px 50px;
+    background-color: transparent;
+    border: 5px solid #224193;
+    border-radius: 10px;
+    color: #FEE715;
+}
+
+#next-level {
+    margin: 5px;
     font-size: 3em;
     padding: 20px 50px;
     background-color: transparent;
@@ -105,6 +116,11 @@ html {
 }
 
 #restart-button:hover {
+    background-color: #FEE715;
+    color: #101820;
+}
+
+#next-level:hover {
     background-color: #FEE715;
     color: #101820;
 }

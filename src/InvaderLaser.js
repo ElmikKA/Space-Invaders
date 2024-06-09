@@ -47,7 +47,8 @@ export class InvaderLaser {
     }
 
     moveLaser() {
-        let removeLaser = null
+        let lasersToRemove = []
+        // let removeLaser = null
         for (let i = 0; i < this.lasers.length; i++) {
             let laser = this.lasers[i]
             if (laser.coords < 210) {
@@ -56,12 +57,16 @@ export class InvaderLaser {
                 this.squares[laser.coords].classList.add('laser')
                 this.checkCollision(laser)
             } else {
-                removeLaser = laser
+                // removeLaser = laser
+                lasersToRemove.push(laser)
             }
         }
-        if (removeLaser) {
-            this.removeLaser(removeLaser)
+        for (let laser of lasersToRemove) {
+            this.removeLaser(laser)
         }
+        // if (removeLaser) {
+        //     this.removeLaser(removeLaser)
+        // }
         if (!this.dead) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
@@ -77,8 +82,14 @@ export class InvaderLaser {
     }
 
     removeLaser(laser) {
-        this.squares[laser.coords].classList.remove('laser')
-        this.lasers.shift()
+        if (this.squares[laser.coords]) {
+            this.squares[laser.coords].classList.remove('laser')
+            // this.lasers.shift()
+        }
+        const index = this.lasers.indexOf(laser)
+        if (index > -1) {
+            this.lasers.splice(index, 1)
+        }
     }
 
     removeHp(laser) {
@@ -93,12 +104,15 @@ export class InvaderLaser {
 
     lowestIndex(alienCoords) {
         let lowestIndex = alienCoords
-        for (let i = 1; i < 4; i++) {
-            if (alienCoords + (i * 15) >= 225) {
-                break
-            } else {
-                if (this.squares[alienCoords + (i * 15)].classList[0] === 'invader') {
-                    lowestIndex = alienCoords + (i * 15)
+        if (this.squares[alienCoords]) {
+
+            for (let i = 1; i < 4; i++) {
+                if (alienCoords + (i * 15) >= 225) {
+                    break
+                } else {
+                    if (this.squares[alienCoords + (i * 15)].classList[0] === 'invader') {
+                        lowestIndex = alienCoords + (i * 15)
+                    }
                 }
             }
         }

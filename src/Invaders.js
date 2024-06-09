@@ -128,6 +128,8 @@ export class Invaders {
         if (this.invaderRemoved.length === this.alienInvaders.length) {
             this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';
+            this.resultScreen.querySelector('#restart').style.display = 'none'
+            this.resultScreen.querySelector('#next-level').style.display = 'flex'
             this.result.textContent = 'YOU HAVE WON'
             this.game.level += 1
             console.log(this.game.level)
@@ -135,14 +137,20 @@ export class Invaders {
         }
 
         if (this.squares[this.currentShooterIndex].classList.contains('invader')) {
+            this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';
+            this.resultScreen.querySelector('#restart').style.display = 'flex'
+            this.resultScreen.querySelector('#next-level').style.display = 'none'
             this.result.textContent = 'GAME OVER'
             this.lasers.dead = true
             this.stop()
         }
 
         if (this.lasers.dead) {
+            this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';
+            this.resultScreen.querySelector('#restart').style.display = 'flex'
+            this.resultScreen.querySelector('#next-level').style.display = 'none'
             this.result.textContent = 'GAME OVER'
             this.stop()
         }

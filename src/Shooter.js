@@ -14,6 +14,8 @@ export class Shooter {
         this.addShooter(); // This ensures that the shooter image is added at the start of the game
         this.animate()
         this.shootLaser();
+        this.shootingInterval = null
+
         this.aliveInvaders = aliveInvaders
         this.alienInvadersCopy = alienInvadersCopy
         this.reqFrameId = null
@@ -73,13 +75,31 @@ export class Shooter {
 
     //Connects to the Laser class, when space is been pushed the the shooter will shoot a laser
     shootLaser() {
+        const startShooting = () => {
+            if (!this.shootingInterval) {
+                this.laser.fire()
+                this.shootingInterval = setInterval(() => {
+                    this.laser.fire()
+                }, 300);
+            }
+        }
+
+        const stopShooting = () => {
+            clearInterval(this.shootingInterval)
+            this.shootingInterval = null
+        }
+
         const keyShoot = (e) => {
             if (e.key === ' ') {
-                // const laser = new Laser(this.currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy)
-                this.laser.fire()
+                if (e.type === 'keydown') {
+                    startShooting()
+                } else if (e.type === 'keyup') {
+                    stopShooting()
+                }
             }
         }
         document.addEventListener('keydown', keyShoot)
+        document.addEventListener('keyup', keyShoot)
         this.keyShoot = keyShoot
     }
 
