@@ -9,17 +9,18 @@ export class Laser {
     static isLaserActive = false;
     static laserSpeed = 1; //Number of frames to skip before moving
 
-    constructor(width, squares, alienInvaders, aliensRemoved, aliveInvaders, alienInvadersCopy, shooter, boss, bossHp, bossDamage, invaders) {
+    constructor(width, squares, aliensRemoved, shooter, boss, bossHp, bossDamage, invaders) {
         this.shooter = shooter
+        // this.currentShooterIndex = shooter.currentShooterIndex
         this.currentLaserIndex = shooter.currentShooterIndex;
         this.width = width;
         this.squares = squares;
-        this.alienInvaders = alienInvaders;
+        this.alienInvaders = invaders.lasers.alienInvaders;
         this.aliensRemoved = aliensRemoved;
         this.reqFrameId = null;
         this.frameCount = 0;
-        this.aliveInvaders = aliveInvaders
-        this.alienInvadersCopy = alienInvadersCopy
+        this.aliveInvaders = invaders.lasers.aliveInvaders
+        this.alienInvadersCopy = invaders.lasers.alienInvadersCopy
         this.boss = boss
         this.bossHp = bossHp
         this.bossDamage = bossDamage

@@ -24,12 +24,15 @@ export class Game {
         this.frameCount = 0;
         this.fps = 0;
         this.reqFrameId = null;
+        this.alienInvaders = []
+        this.aliveInvaders = []
+        this.alienInvadersCopy = []
 
         this.invaders = null;
         this.shooter = null;
 
         this.bossDamage = null
-
+        this.bossHp = 1
         this.level = 1
 
         // opponent
@@ -51,7 +54,8 @@ export class Game {
 
     loaderLogic() {
         this.loader.style.display = 'flex';
-        let countdown = 3;
+        let countdown = 0;
+        // let countdown = 3;
 
         const countdownInterval = setInterval(() => {
             this.loader.textContent = countdown;
@@ -121,6 +125,7 @@ export class Game {
             this.shooter.stop()
         }
         this.grid.innerHTML = ''
+        this.invadersRemoved = []
 
         document.removeEventListener('keydown', this.shooter.checkKeys)
         document.removeEventListener('keyup', this.shooter.checkKeys)
@@ -136,52 +141,45 @@ export class Game {
 
         const squares = Array.from(document.querySelectorAll('.game-board div'));
 
-        // const alienInvaders = [
-        // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-        // 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-        // 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-        // ]
-        const alienInvaders = [6]
-        this.invadersRemoved = []
-        let aliveInvaders = [...alienInvaders]
-        let alienInvadersCopy = [...alienInvaders]
+        this.alienInvaders = [
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+            15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+            30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+        ]
 
         this.gameContainer.style.display = 'flex'
         this.resultScreen.style.display = 'none'
-
-        this.invaders = new Invaders(squares, alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, aliveInvaders, alienInvadersCopy, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.boss);
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, alienInvaders, this.invadersRemoved, aliveInvaders, alienInvadersCopy, this, this.boss, this.bossHp);
+        console.log(this.alienInvaders)
+        console.log(this.invadersRemoved)
+        console.log(this.alienInvadersCopy)
+        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.aliveInvaders, this.alienInvadersCopy, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
+        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy, this, this.boss, this.bossHp, this.bossDamage);
         this.invaders.move();
     }
 
     bossLevel() {
-        let bossHp = 1
+        this.bossHp = 1
         this.bossDamage = 0.3
         this.boss = true
         console.log(this.boss)
         this.grid.innerHTML = ''; // Clear any previous grid
         for (let i = 0; i < this.width * this.width; i++) {
             const square = document.createElement('div');
-            // square.style.backgroundColor = 'black'
             this.grid.appendChild(square);
         }
 
         const squares = Array.from(document.querySelectorAll('.game-board div'));
-        const alienInvaders = [
+        this.alienInvaders = [
             0, 1, 2, 3, 4, 5, 6,
             15, 16, 17, 18, 19, 20, 21,
             30, 31, 32, 33, 34, 35, 36,
         ]
-        this.invadersRemoved = []
-        let aliveInvaders = [...alienInvaders]
-        let alienInvadersCopy = [...alienInvaders]
 
         this.gameContainer.style.display = 'flex'
         this.resultScreen.style.display = 'none'
 
-        this.invaders = new Invaders(squares, alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, aliveInvaders, alienInvadersCopy, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.boss, bossHp);
-
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, alienInvaders, this.invadersRemoved, aliveInvaders, alienInvadersCopy, this, this.boss, bossHp, this.bossDamage);
+        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.aliveInvaders, this.alienInvadersCopy, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
+        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy, this, this.boss, this.bossHp, this.bossDamage);
         this.invaders.move();
 
     }
