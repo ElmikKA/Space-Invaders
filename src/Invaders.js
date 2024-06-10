@@ -1,6 +1,6 @@
 import { InvaderLaser } from "./InvaderLaser.js";
 export class Invaders {
-    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, aliveInvaders, alienInvadersCopy, laserSpeed, frequency, movementSpeed, game) {
+    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, aliveInvaders, alienInvadersCopy, laserSpeed, frequency, movementSpeed, game, boss, bossHp) {
         this.squares = squares;
         this.alienInvaders = alienInvaders;
         this.invaderRemoved = invaderRemoved;
@@ -17,6 +17,8 @@ export class Invaders {
         this.alienInvadersCopy = alienInvadersCopy
         this.shooting = false
         this.game = game
+        this.boss = game.boss
+        this.currentBossHp = bossHp
 
         // stats
         this.moveInterval = movementSpeed;
@@ -35,9 +37,18 @@ export class Invaders {
             if (!this.invaderRemoved.includes(index)) {
                 const square = this.squares[invader];
                 square.classList.add('invader');
-                if (!square.querySelector('img')) {
-                    const invaderImage = this.createInvaderImage();
-                    fragment.appendChild(invaderImage);
+                // square.style.backgroundColor = 'black'
+                if (this.boss) {
+                    if (!square.querySelector('img') && index === 0) {
+                        const invaderImage = this.createInvaderImage();
+                        fragment.appendChild(invaderImage);
+                    }
+                } else {
+                    if (!square.querySelector('img')) {
+                        const invaderImage = this.createInvaderImage();
+                        fragment.appendChild(invaderImage);
+                    }
+
                 }
                 square.appendChild(fragment);
             }
@@ -49,8 +60,14 @@ export class Invaders {
         const invaderImage = document.createElement('img');
         invaderImage.src = 'assets/images/invader.gif';
         invaderImage.alt = 'Invader';
-        invaderImage.style.width = '80px';
-        invaderImage.style.height = '53.33px';
+        if (this.boss) {
+            invaderImage.style.opacity = this.currentBossHp
+            invaderImage.style.width = '550px';
+            invaderImage.style.height = '250.33px';
+        } else {
+            invaderImage.style.width = '80px';
+            invaderImage.style.height = '53.33px';
+        }
         return invaderImage
     }
 
@@ -80,6 +97,7 @@ export class Invaders {
         this.alienInvaders.forEach((invader, index) => {
             const square = this.squares[invader];
             square.classList.remove('invader');
+            // square.style.backgroundColor = 'transparent'
             const invaderImage = square.querySelector('img');
             if (invaderImage) {
                 square.removeChild(invaderImage);
@@ -125,6 +143,17 @@ export class Invaders {
 
     //Check game conditions like win or game over
     checkGameCondition() {
+        if (this.currentBossHp <= 0.00009) {
+
+            this.gameContainer.style.display = 'none';
+            this.resultScreen.style.display = 'flex';
+            this.resultScreen.querySelector('#restart').style.display = 'none'
+            this.resultScreen.querySelector('#next-level').style.display = 'flex'
+            this.result.textContent = 'YOU HAVE WON'
+            this.game.level += 1
+            console.log(this.game.level)
+            this.stop()
+        }
         if (this.invaderRemoved.length === this.alienInvaders.length) {
             this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';

@@ -1,7 +1,7 @@
 import { Laser } from "./Laser.js";
 
 export class Shooter {
-    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders, alienInvadersCopy, game) {
+    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders, alienInvadersCopy, game, boss, bossHp, bossDamage) {
         this.squares = squares;
         this.currentShooterIndex = game.currentShooterIndex;
         this.width = width;
@@ -11,6 +11,12 @@ export class Shooter {
         this.score = 0;
         this.movingLeft = false;
         this.movingRight = false;
+        this.boss = game.boss
+        this.currentBossHp = 1
+        this.bossHp = bossHp
+        this.bossDamage = bossDamage
+        this.game = game
+
         this.addShooter(); // This ensures that the shooter image is added at the start of the game
         this.animate()
         this.shootLaser();
@@ -20,11 +26,12 @@ export class Shooter {
         this.alienInvadersCopy = alienInvadersCopy
         this.reqFrameId = null
 
+
         this.boundCheckKeysDown = (e) => this.checkKeys(e, true)
         this.boundCheckKeysUp = (e) => this.checkKeys(e, false)
 
         this.initEvent();
-        this.laser = new Laser(currentShooterIndex, this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy, this)
+        this.laser = new Laser(this.width, this.squares, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy, this, this.boss, this.bossHp, this.bossDamage, game.invaders)
 
     }
 
@@ -59,6 +66,7 @@ export class Shooter {
     //Adding shooter class
     addShooter() {
         this.squares[this.currentShooterIndex].classList.add('shooter')
+
         const shooterImage = this.shooterImage()
         this.squares[this.currentShooterIndex].appendChild(shooterImage)
     }
@@ -75,9 +83,11 @@ export class Shooter {
 
     //Connects to the Laser class, when space is been pushed the the shooter will shoot a laser
     shootLaser() {
+        let isShooting = false
         const startShooting = () => {
-            if (!this.shootingInterval) {
+            if (!this.shootingInterval && !isShooting) {
                 this.laser.fire()
+                isShooting = true
                 this.shootingInterval = setInterval(() => {
                     this.laser.fire()
                 }, 300);
@@ -87,6 +97,7 @@ export class Shooter {
         const stopShooting = () => {
             clearInterval(this.shootingInterval)
             this.shootingInterval = null
+            isShooting = false
         }
 
         const keyShoot = (e) => {
