@@ -1,6 +1,6 @@
 import { InvaderLaser } from "./InvaderLaser.js";
 export class Invaders {
-    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, aliveInvaders, alienInvadersCopy, laserSpeed, frequency, movementSpeed, game, bossHp) {
+    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp) {
         this.squares = squares;
         this.alienInvaders = alienInvaders;
         this.invaderRemoved = invaderRemoved;
@@ -137,6 +137,7 @@ export class Invaders {
 
     //Check game conditions like win or game over
     checkGameCondition() {
+        this.currentShooterIndex = this.game.shooter.currentShooterIndex // if we don't update it from the shooter class it stays 202
         if (this.currentBossHp <= 0.00009) {
             this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';

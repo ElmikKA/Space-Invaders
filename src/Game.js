@@ -99,12 +99,12 @@ export class Game {
             console.log('level 1')
             this.invaderLaserSpeed = 10
             this.invaderFrequency = 50
-            this.movementSpeed = 1000
+            this.movementSpeed = 100
             this.playLevel()
         } else if (this.level > 1 && this.level !== 2) {
             console.log(`level `, this.level)
             this.invaderLaserSpeed = (this.invaderLaserSpeed > 5) ? this.invaderLaserSpeed - 1 : (console.log('max laser speed'), this.invaderLaserSpeed)
-            this.invaderFrequency = (this.invaderFrequency > 10) ? this.invaderFrequency - 10 : (console.log('max firerate'), this.invaderFrequency)
+            this.invaderFrequency = (this.invaderFrequency > 10) ? this.invaderFrequency - 10 : (console.log('max firerate'), this.invaderFrequency) // fix freq after boss
             this.movementSpeed = (this.movementSpeed > 500) ? this.movementSpeed - 250 : (console.log('max movement speed'), this.movementSpeed)
             this.playLevel()
         } else if (this.level === 2) {
@@ -112,7 +112,6 @@ export class Game {
             this.invaderLaserSpeed = 10
             this.invaderFrequency = 10
             this.movementSpeed = 1000
-
             this.bossLevel()
         }
     }
@@ -149,11 +148,8 @@ export class Game {
 
         this.gameContainer.style.display = 'flex'
         this.resultScreen.style.display = 'none'
-        console.log(this.alienInvaders)
-        console.log(this.invadersRemoved)
-        console.log(this.alienInvadersCopy)
-        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.aliveInvaders, this.alienInvadersCopy, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy, this, this.boss, this.bossHp, this.bossDamage);
+        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
+        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);
         this.invaders.move();
     }
 
@@ -161,7 +157,6 @@ export class Game {
         this.bossHp = 1
         this.bossDamage = 0.3
         this.boss = true
-        console.log(this.boss)
         this.grid.innerHTML = ''; // Clear any previous grid
         for (let i = 0; i < this.width * this.width; i++) {
             const square = document.createElement('div');
@@ -178,8 +173,8 @@ export class Game {
         this.gameContainer.style.display = 'flex'
         this.resultScreen.style.display = 'none'
 
-        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.aliveInvaders, this.alienInvadersCopy, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.alienInvaders, this.invadersRemoved, this.aliveInvaders, this.alienInvadersCopy, this, this.boss, this.bossHp, this.bossDamage);
+        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
+        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);
         this.invaders.move();
 
     }

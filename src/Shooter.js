@@ -1,12 +1,10 @@
 import { Laser } from "./Laser.js";
 
 export class Shooter {
-    constructor(squares, currentShooterIndex, width, alienInvaders, invadersRemoved, aliveInvaders, alienInvadersCopy, game, boss, bossHp, bossDamage) {
+    constructor(squares, currentShooterIndex, width, invadersRemoved, game, bossHp, bossDamage) {
         this.squares = squares;
         this.currentShooterIndex = currentShooterIndex;
         this.width = width;
-        this.alienInvaders = alienInvaders;
-        this.invadersRemoved = invadersRemoved;
         this.lastMoveTime = 0;
         this.score = 0;
         this.movingLeft = false;
@@ -22,8 +20,6 @@ export class Shooter {
         this.shootLaser();
         this.shootingInterval = null
 
-        this.aliveInvaders = aliveInvaders
-        this.alienInvadersCopy = alienInvadersCopy
         this.reqFrameId = null
 
 
@@ -31,7 +27,7 @@ export class Shooter {
         this.boundCheckKeysUp = (e) => this.checkKeys(e, false)
 
         this.initEvent();
-        this.laser = new Laser(this.width, this.squares, this.invadersRemoved, this, this.boss, this.bossHp, this.bossDamage, game.invaders)
+        this.laser = new Laser(this.width, this.squares, invadersRemoved, this, this.boss, this.bossHp, this.bossDamage, game.invaders)
 
     }
 
