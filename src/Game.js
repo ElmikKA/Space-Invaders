@@ -1,7 +1,7 @@
 import { Invaders } from "./Invaders.js"
 import { Shooter } from "./Shooter.js"
+import { Laser } from "./Laser.js"; 
 import { GameTimer } from "./GameTimer.js";
-import { Laser } from "./Laser.js";
 
 export class Game {
     // static level = 1
@@ -15,6 +15,9 @@ export class Game {
         this.restartButton = document.getElementById('restart-button');
         this.nextLevel = document.getElementById('next-level')
         this.resultScreen = document.querySelector('.result-screen');
+        this.dialog = document.querySelector('#pause-menu-dialog');
+        this.openDialogButton = document.querySelector('#open-menu-button');
+        this.continueGameButton = document.querySelector('#continue-game-button');
 
         this.result = document.querySelector('.result');
         this.currentShooterIndex = 202;
@@ -27,6 +30,7 @@ export class Game {
 
         this.invaders = null;
         this.shooter = null;
+        this.gameTimer = new GameTimer();
 
         this.level = 1
 
@@ -36,8 +40,44 @@ export class Game {
         this.movementSpeed = 1000
 
         this.playButton.addEventListener('click', () => this.startGame())
-        this.restartButton.addEventListener('click', () => window.location.reload())
+        this.restartButton.addEventListener('click', () => this.restartGame())
         this.nextLevel.addEventListener('click', () => this.initializeGame())
+        this.openDialogButton.addEventListener('click', () => this.initializePauseMenu())
+        this.continueGameButton.addEventListener('click', () => this.continueGame())
+    }
+
+    initializePauseMenu() {
+        this.pauseGame()
+        this.dialog.showModal();
+    }
+
+    continueGame() {
+
+        this.dialog.close()
+        this.gameTimer.start()
+
+    }
+
+    //TODO: 
+    //Restart Score
+    //Refactor
+    restartGame() {
+        this.restart()
+        this.level = 1;
+        this.dialog.close();
+        this.gameTimer.reset()
+        this.initializeGame()
+    }
+
+
+    pauseGame() {
+        if (this.invaders) {
+            this.invaders.stop()
+        }
+        if (this.shooter) {
+            this.shooter.stop()
+        }
+        this.gameTimer.pause();
     }
 
     startGame() {
@@ -55,8 +95,7 @@ export class Game {
             countdown--;
 
             if (countdown < 0) {
-                const gameTimer = new GameTimer();
-                gameTimer.start()
+                this.gameTimer.start()
                 clearInterval(countdownInterval);
                 this.loader.style.visibility = 'hidden';
                 this.gameContent.style.visibility = 'visible';
@@ -119,8 +158,7 @@ export class Game {
         document.removeEventListener('keyup', this.shooter.checkKeys)
     }
 
-    playLevel() {
-
+    makeGameSquares() {
         this.grid.innerHTML = ''; // Clear any previous grid
         for (let i = 0; i < this.width * this.width; i++) {
             const square = document.createElement('div');
@@ -128,7 +166,11 @@ export class Game {
         }
 
         const squares = Array.from(document.querySelectorAll('.game-board div'));
+        return squares
+    }
 
+    playLevel() {
+        const squares = this.makeGameSquares()
         const alienInvaders = [
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
             15, 16, 17, 18, 19, 20, 21, 22, 23, 24,

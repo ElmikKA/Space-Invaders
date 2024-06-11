@@ -1,10 +1,17 @@
 /* Base Styles */
+:root {
+    --clr--dark: rgb(16, 24, 32);
+    --clr--light: #fff; 
+    --clr--yellow: #FEE715;
+}
+
+
 body,
 html {
     padding: 0;
     margin: 0;
-    background: #101820;
-    color: white;
+    background: var(--clr--dark);
+    color: var(--clr--light);
     width: 100%;
     height: 100%;
     display: flex;
@@ -12,6 +19,36 @@ html {
     align-items: center;
     font-family: 'Orbitron';
 
+}
+
+dialog {
+    display: none;
+}
+
+dialog[open] {
+    display: flex;
+    animation: 2s;
+}
+
+@keyframes appear {
+    from{
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+    }
+}
+
+#pause-menu-dialog {
+    height: 400px;
+    width: 600px;
+    background: rgb(16, 24, 32, 0.9);
+    color: var(--clr--light);
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 /* Game Container */
@@ -92,17 +129,17 @@ html {
 
 .result-screen h1 {
     font-size: 5em;
-    color: #FEE715;
+    color: var(--clr--yellow);
 }
 
-#restart-button {
+#restart-button, #continue-game-button {
     margin: 5px;
-    font-size: 3em;
+    font-size: 1em;
     padding: 20px 50px;
     background-color: transparent;
     border: 5px solid #224193;
     border-radius: 10px;
-    color: #FEE715;
+    color: var(--clr--yellow);
 }
 
 #next-level {
@@ -112,22 +149,21 @@ html {
     background-color: transparent;
     border: 5px solid #224193;
     border-radius: 10px;
-    color: #FEE715;
+    color: var(--clr--yellow);
 }
 
-#restart-button:hover {
-    background-color: #FEE715;
-    color: #101820;
+#restart-button:hover, #continue-game-button:hover {
+    background-color: var(--clr--yellow);
+    color: var(--clr--dark);
 }
 
 #next-level:hover {
-    background-color: #FEE715;
-    color: #101820;
+    background-color: var(--clr--yellow);
 }
 
 .start-screen h1 {
     font-size: 8em;
-    color: #FEE715;
+    color: var(--clr--yellow);
 }
 
 .start-screen button,
@@ -143,12 +179,12 @@ html {
     background-color: transparent;
     border: 5px solid #224193;
     border-radius: 10px;
-    color: #FEE715;
+    color: var(--clr--yellow);
 }
 
 #play-button:hover {
-    background-color: #FEE715;
-    color: #101820;
+    background-color: var(--clr--yellow);
+    color: var(--clr--dark);
 }
 
 /* Loader Styles */

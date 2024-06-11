@@ -18,22 +18,45 @@
 
     <div class="game-container">
         <div id="bubbles"></div>
+
+        <!-- Start Screen -->
         <div class="start-screen">
             <h1>SPACE INVADERS</h1>
             <button id="play-button">PLAY</button>
         </div>
+
+        <!-- Game Content -->
         <div class="game-content">
+
+            <!-- Game Header -->
             <div class="game-header">
                 <div>Score: <span class="score"></span></div>
                 <div class="hearts">Lives: <span class="heart">❤️</span> <span class="heart">❤️</span> <span
                         class="heart">❤️</span>
                 </div>
+
+                <!-- Pause Menu -->
+                <div>
+                    <button id="open-menu-button">⏸️</button>
+                    <dialog id="pause-menu-dialog">
+                        <h1>PAUSE MENU</h1>
+                        <div class="menu-buttons-div">
+                            <button id="continue-game-button">CONTINUE</button>
+                            <button id="restart-button">RESTART</button>
+                        </div>
+                    </dialog>
+                </div>
+
                 <div>Time: <span class="game-timer"></span></div>
                 <div id="fps-counter"></div>
             </div>
+
+            <!-- Game Board -->
             <div class="game-board"></div>
         </div>
     </div>
+
+
     <div class="result-screen" id="result-screen">
         <h1><span class="result"></span></h1>
         <div id="restart">
@@ -48,7 +71,6 @@
 
 
     <script src="script.js" type="module"></script>
-
 </body>
 
 </html>
