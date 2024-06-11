@@ -62,7 +62,6 @@ export class Shooter {
     //Adding shooter class
     addShooter() {
         this.squares[this.currentShooterIndex].classList.add('shooter')
-
         const shooterImage = this.shooterImage()
         this.squares[this.currentShooterIndex].appendChild(shooterImage)
     }
@@ -113,7 +112,6 @@ export class Shooter {
     //Checks if the right keys are pushed
     initEvent() {
         document.addEventListener('keydown', this.boundCheckKeysDown);
-
         document.addEventListener('keyup', this.boundCheckKeysUp);
     }
 
@@ -138,7 +136,6 @@ export class Shooter {
             document.removeEventListener('keydown', this.keyShoot)
             document.removeEventListener('keydown', this.boundCheckKeysDown)
             document.removeEventListener('keydown', this.boundCheckKeysUp)
-
             this.laser.stop()
         }
     }

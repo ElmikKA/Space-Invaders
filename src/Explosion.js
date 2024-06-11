@@ -1,9 +1,10 @@
 export class Explosion {
-    constructor(element) {
+    constructor(element, boss) {
         this.element = element;
         this.reqFrameId = null;
         this.startTime = null;
         this.duration = 300; // Duration of the explosion in milliseconds
+        this.boss = boss
         this.initiate();
     }
 
@@ -21,6 +22,13 @@ export class Explosion {
         // Apply the animation effect based on progress
         if (progress < 1) {
             this.element.classList.add('boom');
+            if (this.boss) {
+                this.element.style.width = '300px'
+                this.element.style.height = '300.33px'
+            } else {
+                this.element.style.width = '80px'
+                this.element.style.height = '80.33px'
+            }
             this.reqFrameId = requestAnimationFrame(this.animate.bind(this));
         } else {
             this.element.classList.remove('boom');

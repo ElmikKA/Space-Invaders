@@ -68,7 +68,6 @@ export class Invaders {
 
     //Moves invaders in the grid
     moveInvaders() {
-        // console.log('move invaders', this.boss)
         const now = Date.now()
         if (now - this.lastMoveTime < this.moveInterval) {
             this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())

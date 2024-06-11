@@ -27,10 +27,8 @@ export class Game {
         this.alienInvaders = []
         this.aliveInvaders = []
         this.alienInvadersCopy = []
-
         this.invaders = null;
         this.shooter = null;
-
         this.bossDamage = null
         this.bossHp = 1
         this.level = 1
@@ -88,7 +86,6 @@ export class Game {
 
     initializeGame() {
         if (this.level != 1) {
-
             this.restart()
         }
         console.log('init')
@@ -99,7 +96,7 @@ export class Game {
             console.log('level 1')
             this.invaderLaserSpeed = 10
             this.invaderFrequency = 50
-            this.movementSpeed = 100
+            this.movementSpeed = 1000
             this.playLevel()
         } else if (this.level > 1 && this.level !== 2) {
             console.log(`level `, this.level)
@@ -146,6 +143,7 @@ export class Game {
             30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
         ]
 
+        // this.alienInvaders = [6]
         this.gameContainer.style.display = 'flex'
         this.resultScreen.style.display = 'none'
         this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);

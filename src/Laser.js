@@ -11,7 +11,6 @@ export class Laser {
 
     constructor(width, squares, aliensRemoved, shooter, boss, bossHp, bossDamage, invaders) {
         this.shooter = shooter
-        // this.currentShooterIndex = shooter.currentShooterIndex
         this.currentLaserIndex = shooter.currentShooterIndex;
         this.width = width;
         this.squares = squares;
@@ -64,6 +63,7 @@ export class Laser {
                 this.invaders.currentBossHp = this.bossHp
                 img.style.opacity = this.bossHp
                 if (this.bossHp < 0.0005) {
+                    new Explosion(this.squares[this.aliveInvaders[3]], this.boss)
                     this.updateBossScore()
                 }
             } else {
