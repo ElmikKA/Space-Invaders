@@ -7,28 +7,35 @@ import { Explosion } from "./Explosion.js";
 export class Laser {
     static score = 0;
     static isLaserActive = false;
-    static laserSpeed = 3; //Number of frames to skip before moving
+    static laserSpeed = 1; //Number of frames to skip before moving
 
-    constructor(currentShooterIndex, width, squares, alienInvaders, aliensRemoved) {
-        this.currentLaserIndex = currentShooterIndex;
+    constructor(width, squares, aliensRemoved, shooter, boss, bossHp, bossDamage, invaders) {
+        this.shooter = shooter
+        this.currentLaserIndex = shooter.currentShooterIndex;
         this.width = width;
         this.squares = squares;
-        this.alienInvaders = alienInvaders;
+        this.alienInvaders = invaders.lasers.alienInvaders;
         this.aliensRemoved = aliensRemoved;
         this.reqFrameId = null;
-        this.frameCount = 0; 
+        this.frameCount = 0;
+        this.aliveInvaders = invaders.lasers.aliveInvaders
+        this.alienInvadersCopy = invaders.lasers.alienInvadersCopy
+        this.boss = boss
+        this.bossHp = bossHp
+        this.bossDamage = bossDamage
+        this.invaders = invaders
     }
 
     moveLaser() {
         this.squares[this.currentLaserIndex].classList.remove('laser')
         this.currentLaserIndex -= this.width;
-        if(this.currentLaserIndex >= 0) {
+        if (this.currentLaserIndex >= 0) {
             this.squares[this.currentLaserIndex].classList.add('laser')
             this.checkCollision()
-            if(Laser.isLaserActive) {
+            if (Laser.isLaserActive) {
                 this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
             }
-        } else {   
+        } else {
             this.clearLaser()
             return;
         }
@@ -38,7 +45,7 @@ export class Laser {
         //Increment the frame counter
         this.frameCount++;
         // Only move the laser every Laser.laserSpeed frames
-        if(this.frameCount  % Laser.laserSpeed === 0) {
+        if (this.frameCount % Laser.laserSpeed === 0) {
             this.moveLaser();
         } else {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
@@ -47,12 +54,28 @@ export class Laser {
 
     //Checks if the Laser hits invader
     checkCollision() {
-        if(this.squares[this.currentLaserIndex].classList.contains('invader')) {
+        if (this.squares[this.currentLaserIndex].classList.contains('invader')) {
             this.squares[this.currentLaserIndex].classList.remove('laser')
-            this.removeInvader()
+            if (this.boss) {
+                let boss = this.squares[this.alienInvaders[0]]
+                let img = boss.querySelector('img')
+                this.bossHp -= this.bossDamage
+                this.invaders.currentBossHp = this.bossHp
+                img.style.opacity = this.bossHp
+                if (this.bossHp < 0.0005) {
+                    new Explosion(this.squares[this.aliveInvaders[3]], this.boss)
+                    this.updateBossScore()
+                }
+            } else {
+                this.removeInvader()
+            }
             new Explosion(this.squares[this.currentLaserIndex])
-            this.addRemovedInvadersIndex()
-            this.updateScore()
+            if (!this.boss) {
+                this.addRemovedInvadersIndex()
+            }
+            if (!this.boss) {
+                this.updateScore()
+            }
             this.clearLaser()
         }
     }
@@ -68,6 +91,9 @@ export class Laser {
     addRemovedInvadersIndex() {
         const alienRemoveIndex = this.alienInvaders.indexOf(this.currentLaserIndex)
         this.aliensRemoved.push(alienRemoveIndex)
+        const aliveNum = this.alienInvadersCopy[alienRemoveIndex]
+        const aliveIndex = this.aliveInvaders.indexOf(aliveNum)
+        this.aliveInvaders.splice(aliveIndex, 1)
     }
 
     //Updates score
@@ -78,21 +104,35 @@ export class Laser {
         scoreDisplay.textContent = Laser.score;
         this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
     }
-
+    updateBossScore() {
+        const scoreDisplay = document.querySelector('.score');
+        Laser.score += 2500;
+        scoreDisplay.textContent = Laser.score;
+    }
     //Iniziates the laser firing method
     fire() {
         if (Laser.isLaserActive) return; // Do not fire if a laser is already active
         Laser.isLaserActive = true; // Set the flag to true when a laser is fired
+        this.currentLaserIndex = this.shooter.currentShooterIndex;
+
         this.frameCount = 0;// Reset the frame count
         this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
     }
 
     //Cleares laser
     clearLaser() {
-        if(this.reqFrameId) {
+        if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null;
         }
         Laser.isLaserActive = false;
     }
-  }
+
+    stop() {
+        if (this.reqFrameId) {
+            cancelAnimationFrame(this.reqFrameId)
+            this.reqFrameId = null
+        }
+        Laser.isLaserActive = false
+    }
+}
