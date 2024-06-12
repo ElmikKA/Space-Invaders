@@ -7,6 +7,7 @@ export class InvaderLaser {
         this.squares = squares
         this.width = width
         this.frameCount = 0
+        this.moveCount = 0
         this.reqFrameId = null
         this.hp = document.querySelector('.hearts')
         this.dead = false
@@ -19,10 +20,8 @@ export class InvaderLaser {
         this.game = game
     }
 
-
-
-    // fire rate does not change with the change of invaders (maybe change the logic?)
     fire() {
+        // picks a random alive invader and shoots from his row
         const RandomAlien = Math.floor(Math.random() * this.aliveInvaders.length)
         let alienNum = this.aliveInvaders[RandomAlien]
         this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
@@ -35,9 +34,14 @@ export class InvaderLaser {
     }
 
     animateLaser() {
+        // different counts so the dynamic firerate based on invaders alive works
         this.frameCount++
-        if (this.frameCount % this.frequency === 0) {
+        this.moveCount++
+
+        // different firerate based on alive invaders with a cap of 10 frames
+        if (this.frameCount % Math.floor(Math.max(10, (this.frequency - this.aliveInvaders.length * 2))) === 0) {
             this.fire()
+            this.frameCount = 0
         }
         if (this.frameCount % this.laserSpeed === 0) {
             this.moveLaser()
@@ -56,46 +60,43 @@ export class InvaderLaser {
                 this.squares[laser.coords].classList.add('laser')
                 this.checkCollision(laser)
             } else {
-                lasersToRemove.push(laser)
+                lasersToRemove.push(laser) // if out of bounds it adds laser to be removed
             }
         }
-        for (let laser of lasersToRemove) {
+        for (let laser of lasersToRemove) { // removes all oob lasers
             this.removeLaser(laser)
         }
-        if (!this.dead) {
+        if (!this.dead) { // if still alive it keeps going
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 
-    checkCollision(laser) {
+    checkCollision(laser) { // checks if laser hit shooter
         if (this.squares[laser.coords].classList.contains('shooter')) {
             this.removeLaser(laser)
             this.removeHp(laser)
         }
     }
 
-    removeLaser(laser) {
+    removeLaser(laser) { // removes laser
         if (this.squares[laser.coords]) {
             this.squares[laser.coords].classList.remove('laser')
-        }
-        const index = this.lasers.indexOf(laser)
-        if (index > -1) {
-            this.lasers.splice(index, 1)
         }
     }
 
     removeHp(laser) {
+        // removes hp if damaged
         let child = this.hp.lastElementChild
         this.hp.removeChild(child)
-        if (this.hp.childElementCount === 0) {
+        if (this.hp.childElementCount === 0) { // adds explosion on death
             new Explosion(this.squares[laser.coords])
             this.dead = true
             cancelAnimationFrame(this.reqFrameId)
         }
     }
 
-    // breaks if we have more than 3 rows of opponents
-    lowestIndex() {
+
+    lowestIndex() { // when the top row of aliens are chosen for laser it shoots from the lowest alien
         if (this.squares[this.alienCoords]) {
             for (let i = 1; i < 4; i++) {
                 if (this.alienCoords + (i * 15) <= 225) {
@@ -107,7 +108,7 @@ export class InvaderLaser {
         }
     }
 
-    stop() {
+    stop() { // stops everything
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null

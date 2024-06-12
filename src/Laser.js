@@ -7,7 +7,7 @@ import { Explosion } from "./Explosion.js";
 export class Laser {
     static score = 0;
     static isLaserActive = false;
-    static laserSpeed = 1; //Number of frames to skip before moving
+    static laserSpeed = 3; //Number of frames to skip before moving
 
     constructor(width, squares, aliensRemoved, shooter, boss, bossHp, bossDamage, invaders) {
         this.shooter = shooter
@@ -56,14 +56,14 @@ export class Laser {
     checkCollision() {
         if (this.squares[this.currentLaserIndex].classList.contains('invader')) {
             this.squares[this.currentLaserIndex].classList.remove('laser')
-            if (this.boss) {
+            if (this.boss) { // each hit on boss lowers its opacity
                 let boss = this.squares[this.alienInvaders[0]]
                 let img = boss.querySelector('img')
                 this.bossHp -= this.bossDamage
                 this.invaders.currentBossHp = this.bossHp
                 img.style.opacity = this.bossHp
                 if (this.bossHp < 0.0005) {
-                    new Explosion(this.squares[this.aliveInvaders[3]], this.boss)
+                    new Explosion(this.squares[this.alienInvaders[3]], this.boss)
                     this.updateBossScore()
                 }
             } else {

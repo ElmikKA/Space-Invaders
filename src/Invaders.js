@@ -55,7 +55,7 @@ export class Invaders {
         const invaderImage = document.createElement('img');
         invaderImage.src = 'assets/images/invader.gif';
         invaderImage.alt = 'Invader';
-        if (this.boss) {
+        if (this.boss) { // different sizes for boss or normal invaders
             invaderImage.style.opacity = this.currentBossHp
             invaderImage.style.width = '550px';
             invaderImage.style.height = '250.33px';
@@ -136,7 +136,7 @@ export class Invaders {
 
     //Check game conditions like win or game over
     checkGameCondition() {
-        this.currentShooterIndex = this.game.shooter.currentShooterIndex // if we don't update it from the shooter class it stays 202
+        this.currentShooterIndex = this.game.shooter.currentShooterIndex
         if (this.currentBossHp <= 0.00009) {
             this.gameContainer.style.display = 'none';
             this.resultScreen.style.display = 'flex';
@@ -144,7 +144,6 @@ export class Invaders {
             this.resultScreen.querySelector('#next-level').style.display = 'flex'
             this.result.textContent = 'YOU HAVE WON'
             this.game.level += 1
-            console.log(this.game.level)
             this.stop()
         }
         if (this.invaderRemoved.length === this.alienInvaders.length) {
@@ -154,7 +153,6 @@ export class Invaders {
             this.resultScreen.querySelector('#next-level').style.display = 'flex'
             this.result.textContent = 'YOU HAVE WON'
             this.game.level += 1
-            console.log(this.game.level)
             this.stop()
         }
 
@@ -178,7 +176,7 @@ export class Invaders {
         }
     }
 
-    // Stop the movment of invaders
+    // Stop the movement of invaders
     stop() {
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
