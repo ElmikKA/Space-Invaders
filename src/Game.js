@@ -168,7 +168,7 @@ export class Game {
         document.removeEventListener('keyup', this.shooter.checkKeys)
     }
 
-    playLevel() {
+    makeGameSquares() {
         this.boss = false
         this.grid.innerHTML = ''; // Clear any previous grid
         for (let i = 0; i < this.width * this.width; i++) {
@@ -180,7 +180,7 @@ export class Game {
         return squares
     }
 
-        this.alienInvaders = [
+
     playLevel() {
         const squares = this.makeGameSquares()
         const alienInvaders = [
