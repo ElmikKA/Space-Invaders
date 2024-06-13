@@ -1,12 +1,13 @@
+import { GameUI } from "./GameUI.js";
 import { InvaderLaser } from "./InvaderLaser.js";
 export class Invaders {
-    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp) {
+    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContent, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp) {
         this.squares = squares;
         this.alienInvaders = alienInvaders;
         this.invaderRemoved = invaderRemoved;
         this.width = width
         this.currentShooterIndex = currentShooterIndex;
-        this.gameContainer = gameContainer;
+        this.gameContent = gameContent;
         this.result = result;
         this.resultScreen = resultScreen;
         this.direction = 1;
@@ -24,6 +25,7 @@ export class Invaders {
         this.frequency = frequency
 
         this.lasers = new InvaderLaser(this.alienInvaders, this.squares, this.width, this.laserSpeed, this.frequency, game)
+        this.gameUI = new GameUI();
     }
 
     // Adds invaders to the grid
@@ -138,44 +140,34 @@ export class Invaders {
     checkGameCondition() {
         this.currentShooterIndex = this.game.shooter.currentShooterIndex // if we don't update it from the shooter class it stays 202
         if (this.currentBossHp <= 0.00009) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'none'
-            this.resultScreen.querySelector('#next-level').style.display = 'flex'
-            this.result.textContent = 'YOU HAVE WON'
-            this.game.level += 1
-            console.log(this.game.level)
-            this.stop()
+            this.userHasWonTheGame()
         }
         if (this.invaderRemoved.length === this.alienInvaders.length) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'none'
-            this.resultScreen.querySelector('#next-level').style.display = 'flex'
-            this.result.textContent = 'YOU HAVE WON'
-            this.game.level += 1
-            console.log(this.game.level)
-            this.stop()
+            this.userHasWonTheGame()
         }
 
         if (this.squares[this.currentShooterIndex].classList.contains('invader')) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'flex'
-            this.resultScreen.querySelector('#next-level').style.display = 'none'
-            this.result.textContent = 'GAME OVER'
-            this.lasers.dead = true
-            this.stop()
+            this.userHasLostTheGame()
         }
 
         if (this.lasers.dead) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'flex'
-            this.resultScreen.querySelector('#next-level').style.display = 'none'
-            this.result.textContent = 'GAME OVER'
-            this.stop()
+           this.userHasLostTheGame()
         }
+    }
+    // If the user has won the game
+    userHasWonTheGame() {
+        this.gameUI.showResultScreen(true)
+        this.result.textContent = 'YOU HAVE WON'
+        this.game.level += 1
+        console.log(this.game.level)
+        this.stop()
+    }
+    //If the user has lost the game
+    userHasLostTheGame() {
+        this.gameUI.showResultScreen(false)
+        this.result.textContent = 'GAME OVER';
+        this.lasers.dead();
+        this.stop();
     }
 
     // Stop the movment of invaders
