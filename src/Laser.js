@@ -130,12 +130,14 @@ export class Laser {
     }
     //Iniziates the laser firing method
     fire() {
+        let music = new Audio('../sounds/laser2.wav')
+        music.volume = 0.7
         this.currentFrameTime = performance.now() // shooting is now based on the time since last shot
         this.delta = this.currentFrameTime - this.lastFrameTime
         if (this.delta >= 300) {
             this.lastFrameTime = this.currentFrameTime
-            console.log('fire passed')
             this.lasers.push({ coords: this.shooter.currentShooterIndex })
+            music.play()
             if (!Laser.isLaserActive) {
                 Laser.isLaserActive = true
                 this.reqFrameId = requestAnimationFrame(() => this.animateLaser())

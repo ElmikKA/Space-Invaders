@@ -27,6 +27,9 @@ export class InvaderLaser {
         this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
         this.alienCoords = this.alienInvaders[this.alienShooterIndex]
         this.lowestIndex()
+        let music = new Audio('../sounds/invaderLaser2.wav')
+        music.volume = 0.7
+        music.play()
         this.lasers.push({ coords: this.alienCoords })
         if (!this.reqFrameId && !this.dead) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())

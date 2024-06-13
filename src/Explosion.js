@@ -9,6 +9,9 @@ export class Explosion {
     }
 
     initiate() {
+        let music = new Audio('../sounds/explosion2.mp3')
+        music.volume = 0.5
+        music.play()
         this.startAnimation();
     }
 

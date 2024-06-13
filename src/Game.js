@@ -48,6 +48,9 @@ export class Game {
 
     startGame() {
         // Hide the start screen if it is visible
+        let backgroundMusic = document.querySelector('#audio')
+        backgroundMusic.volume = 0.4
+        backgroundMusic.play()
         this.startScreen.style.display = 'none';
         this.loaderLogic()
     }
@@ -55,7 +58,7 @@ export class Game {
     loaderLogic() {
         this.loader.style.display = 'flex';
         let countdown = 3;
-
+        let beep = new Audio('../sounds/beep2.mp3')
         beep.volume = 0.5
         const countdownInterval = setInterval(() => {
             this.loader.textContent = countdown;
@@ -71,6 +74,8 @@ export class Game {
                 beep.volume = 0.5
                 beep.play()
                 this.initializeGame();
+            } else {
+                beep.play()
             }
         }, 1000);
     }
