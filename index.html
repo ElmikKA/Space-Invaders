@@ -17,27 +17,28 @@
 <body>
 
     <div class="game-container">
+        <!-- Background Bubbles -->
         <div id="bubbles"></div>
 
         <!-- Start Screen -->
-        <div class="start-screen">
+        <section class="start-screen visible">
             <h1>SPACE INVADERS</h1>
             <button id="play-button">PLAY</button>
-        </div>
+        </section>
 
         <!-- Game Content -->
-        <div class="game-content">
-
+        <section class="game-content hidden">
             <!-- Game Header -->
             <div class="game-header">
-                <div>Score: <span class="score"></span></div>
+                <div>Score: <span class="score">0</span></div>
                 <div class="hearts">Lives: <span class="heart">❤️</span> <span class="heart">❤️</span> <span
                         class="heart">❤️</span>
                 </div>
-
                 <!-- Pause Menu -->
                 <div>
+                    <!-- Open Pause Menu Button  -->
                     <button id="open-menu-button">⏸️</button>
+                    <!-- Pause Menu Dialog -->
                     <dialog id="pause-menu-dialog">
                         <h1>PAUSE MENU</h1>
                         <div class="menu-buttons-div">
@@ -46,29 +47,34 @@
                         </div>
                     </dialog>
                 </div>
-
                 <div>Time: <span class="game-timer"></span></div>
                 <div id="fps-counter"></div>
             </div>
 
             <!-- Game Board -->
             <div class="game-board"></div>
-        </div>
+        </section>
+
+        <!-- Result Screen -->
+        <section class="result-screen hidden" id="result-screen">
+            <h1><span class="result"></span></h1>
+
+            <!-- Restart Button -->
+            <div id="restart" class="hidden">
+                <button id="restart-button">PLAY AGAIN</button>
+            </div>
+
+            <!-- Next Level Button -->
+            <div id="next-level-div" class="hidden">
+                <button id="next-level">Next level</button>
+            </div>
+        </section>
+
+        <!-- Loader -->
+        <div class="loader hidden" id="loader"></div>
     </div>
 
-
-    <div class="result-screen" id="result-screen">
-        <h1><span class="result"></span></h1>
-        <div id="restart">
-            <button id="restart-button">PLAY AGAIN</button>
-        </div>
-        <div id="next-level-div">
-            <button id="next-level">Next level</button>
-        </div>
-    </div>
-    <div class="loader" id="loader">
-    </div>
-
+    
 
     <script src="script.js" type="module"></script>
 </body>
