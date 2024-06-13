@@ -56,6 +56,7 @@ export class Game {
         this.loader.style.display = 'flex';
         let countdown = 3;
 
+        beep.volume = 0.5
         const countdownInterval = setInterval(() => {
             this.loader.textContent = countdown;
             countdown--;
@@ -66,6 +67,9 @@ export class Game {
                 clearInterval(countdownInterval);
                 this.loader.style.visibility = 'hidden';
                 this.gameContent.style.visibility = 'visible';
+                let beep = new Audio('../sounds/beep.mp3')
+                beep.volume = 0.5
+                beep.play()
                 this.initializeGame();
             }
         }, 1000);
