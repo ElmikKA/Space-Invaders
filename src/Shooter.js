@@ -38,14 +38,18 @@ export class Shooter {
         const now = Date.now();
         if (now - this.lastMoveTime < 100) return;  // Minimum 100 ms between moves
         this.lastMoveTime = now;
-        this.removeShooter()
+        this.removeShooter();
+        this.updatedShooterPositsion();
+        this.addShooter();
+    }
+
+    updatedShooterPositsion() {
         if (this.movingLeft && this.currentShooterIndex % this.width !== 0) {
             this.currentShooterIndex -= 1;
         }
         if (this.movingRight && this.currentShooterIndex % this.width < this.width - 1) {
             this.currentShooterIndex += 1;
         }
-        this.addShooter()
     }
 
     //Removing Shooter
