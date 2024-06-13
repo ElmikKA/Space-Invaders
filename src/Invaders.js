@@ -1,3 +1,4 @@
+import { Game } from "./Game.js";
 import { GameUI } from "./GameUI.js";
 import { InvaderLaser } from "./InvaderLaser.js";
 export class Invaders {
@@ -18,6 +19,7 @@ export class Invaders {
         this.game = game
         this.boss = game.boss
         this.currentBossHp = bossHp
+        this.gameOnPause = false;
 
         // stats
         this.moveInterval = movementSpeed;
@@ -70,6 +72,7 @@ export class Invaders {
 
     //Moves invaders in the grid
     moveInvaders() {
+        if(this.gameOnPause) return;
         const now = Date.now()
         if (now - this.lastMoveTime < this.moveInterval) {
             this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
@@ -84,7 +87,7 @@ export class Invaders {
         if (!this.shooting) {
             this.shootLaser()
         }
-        if (this.reqFrameId) {
+        if (!this.gameOnPause && this.reqFrameId) {
             this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
         }
     }
@@ -133,41 +136,38 @@ export class Invaders {
 
     //Starts the movment of invaders
     move() {
-        this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        if(!this.gameOnPause) {
+            this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        }
     }
 
     //Check game conditions like win or game over
     checkGameCondition() {
         this.currentShooterIndex = this.game.shooter.currentShooterIndex // if we don't update it from the shooter class it stays 202
         if (this.currentBossHp <= 0.00009) {
-            this.userHasWonTheGame()
+            this.endGame('YOU HAVE WON', true)
         }
         if (this.invaderRemoved.length === this.alienInvaders.length) {
-            this.userHasWonTheGame()
+            this.endGame('YOU HAVE WON', true)
         }
 
         if (this.squares[this.currentShooterIndex].classList.contains('invader')) {
-            this.userHasLostTheGame()
+            this.endGame('YOU HAVE LOST', false)
         }
 
         if (this.lasers.dead) {
-           this.userHasLostTheGame()
+            this.endGame('YOU HAVE LOST', false)
         }
     }
-    // If the user has won the game
-    userHasWonTheGame() {
-        this.gameUI.showResultScreen(true)
-        this.result.textContent = 'YOU HAVE WON'
-        this.game.level += 1
+    // End game message
+    endGame(message, won) {
+        this.gameUI.showResultScreen(won)
+        this.result.textContent = message
+        if(won) {
+            this.game.level += 1
+        }
         console.log(this.game.level)
         this.stop()
-    }
-    //If the user has lost the game
-    userHasLostTheGame() {
-        this.gameUI.showResultScreen(false)
-        this.result.textContent = 'GAME OVER';
-        this.lasers.dead();
-        this.stop();
     }
 
     // Stop the movment of invaders
@@ -180,7 +180,22 @@ export class Invaders {
     }
 
     shootLaser() {
-        this.lasers.fire()
-        this.shooting = true
+        if(!this.gameOnPause) {
+            this.lasers.fire()
+            this.shooting = true
+        }
+    }
+
+    //Resumes the Invaders movement
+    resume() {
+        this.gameOnPause = false;
+        this.move();
+        this.lasers.resume()
+    }
+
+    //Pauses the Invaders movement
+    pause() {
+        this.gameOnPause = true;
+        this.lasers.pause()
     }
 }

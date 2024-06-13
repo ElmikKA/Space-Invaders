@@ -17,24 +17,30 @@ export class InvaderLaser {
         this.laserSpeed = laserSpeed
         this.frequency = frequency
         this.game = game
+        this.gameOnPause = false;
     }
 
 
 
     // fire rate does not change with the change of invaders (maybe change the logic?)
     fire() {
+        if(this.gameOnPause || this.dead) return;
         const RandomAlien = Math.floor(Math.random() * this.aliveInvaders.length)
         let alienNum = this.aliveInvaders[RandomAlien]
         this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
         this.alienCoords = this.alienInvaders[this.alienShooterIndex]
         this.lowestIndex()
         this.lasers.push({ coords: this.alienCoords })
-        if (!this.reqFrameId && !this.dead) {
+        if (!this.reqFrameId && !this.dead && !this.gameOnPause) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 
     animateLaser() {
+        if(this.gameOnPause) {
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser());
+            return;
+        }
         this.frameCount++
         if (this.frameCount % this.frequency === 0) {
             this.fire()
@@ -47,6 +53,7 @@ export class InvaderLaser {
     }
 
     moveLaser() {
+        if(this.gameOnPause) return;
         let lasersToRemove = [] // in case multiple lasers go out of bounds at once
         for (let i = 0; i < this.lasers.length; i++) {
             let laser = this.lasers[i]
@@ -62,7 +69,7 @@ export class InvaderLaser {
         for (let laser of lasersToRemove) {
             this.removeLaser(laser)
         }
-        if (!this.dead) {
+        if (!this.dead && !this.gameOnPause) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
@@ -111,6 +118,18 @@ export class InvaderLaser {
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null
+        }
+    }
+    // Pauses the Invaders Lasers
+    pause() {
+        this.gameOnPause = true;
+    }
+
+    //Resumes the Invaders Lasers from the last point
+    resume() {
+        this.gameOnPause = false;
+        if(!this.dead && !this.reqFrameId) {
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 }

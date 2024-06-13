@@ -18,6 +18,7 @@ export class Game {
         this.dialog = document.querySelector('#pause-menu-dialog');
         this.openDialogButton = document.querySelector('#open-menu-button');
         this.continueGameButton = document.querySelector('#continue-game-button');
+        this.scoreDisplay = document.querySelector('.score');
 
         this.result = document.querySelector('.result');
         this.currentShooterIndex = 202;
@@ -36,6 +37,7 @@ export class Game {
         this.bossDamage = null
         this.bossHp = 1
         this.level = 1
+        this.pause = false;
 
         this.gameTimer = new GameTimer()
         this.gameUI = new GameUI()
@@ -68,6 +70,8 @@ export class Game {
 
         this.dialog.close()
         this.gameTimer.start()
+        this.invaders.resume();
+        this.shooter.resume()
 
     }
 
@@ -77,6 +81,8 @@ export class Game {
     restartGame() {
         this.restart()
         this.level = 1;
+        Laser.score = 0;
+        this.scoreDisplay.innerHTML = 0;
         this.dialog.close();
         this.gameTimer.reset()
         this.initializeGame()
@@ -84,13 +90,9 @@ export class Game {
 
 
     pauseGame() {
-        if (this.invaders) {
-            this.invaders.stop()
-        }
-        if (this.shooter) {
-            this.shooter.stop()
-        }
         this.gameTimer.pause();
+        this.shooter.pause()
+        this.invaders.pause()
     }
 
     startGame() {
@@ -112,10 +114,6 @@ export class Game {
                 this.gameTimer.start()
                 clearInterval(countdownInterval);
                 this.gameUI.showGameContent()
-                // this.loader.classList.add('hidden')
-                // this.gameContent.classList.remove('hidden')
-                // this.loader.style.visibility = 'hidden';
-                // this.gameContent.style.visibility = 'visible';
                 this.initializeGame();
             }
         }, 1000);
@@ -202,7 +200,7 @@ export class Game {
         // this.alienInvaders = [6]
 
         this.gameUI.showGameContent()
-        // this.resultScreen.style.display = 'none'
+
         this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContent, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
         this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);
         this.invaders.move();
@@ -226,7 +224,6 @@ export class Game {
         ]
 
         this.gameUI.showGameContent()
-        // this.resultScreen.style.display = 'none'
 
         this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContent, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
         this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);

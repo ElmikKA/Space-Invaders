@@ -24,9 +24,14 @@ export class Laser {
         this.bossHp = bossHp
         this.bossDamage = bossDamage
         this.invaders = invaders
+        this.gameOnPause = false;
+        
+
+        this.scoreDisplay = document.querySelector('.score');
     }
 
     moveLaser() {
+        if(this.gameOnPause) return;
         this.squares[this.currentLaserIndex].classList.remove('laser')
         this.currentLaserIndex -= this.width;
         if (this.currentLaserIndex >= 0) {
@@ -42,6 +47,8 @@ export class Laser {
     }
 
     animateLaser() {
+        if(this.gameOnPause) return;
+
         //Increment the frame counter
         this.frameCount++;
         // Only move the laser every Laser.laserSpeed frames
@@ -99,15 +106,13 @@ export class Laser {
     //Updates score
     //Maybe move to another class?
     updateScore() {
-        const scoreDisplay = document.querySelector('.score');
         Laser.score += 100;
-        scoreDisplay.textContent = Laser.score;
+        this.scoreDisplay.textContent = Laser.score;
         this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
     }
     updateBossScore() {
-        const scoreDisplay = document.querySelector('.score');
         Laser.score += 2500;
-        scoreDisplay.textContent = Laser.score;
+        this.scoreDisplay.textContent = Laser.score;
     }
     //Iniziates the laser firing method
     fire() {
@@ -134,5 +139,16 @@ export class Laser {
             this.reqFrameId = null
         }
         Laser.isLaserActive = false
+    }
+
+    resume() {
+        this.gameOnPause = false;
+        if(Laser.isLaserActive) {
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+        }
+    }
+
+    pause() {
+        this.gameOnPause = true;
     }
 }

@@ -14,6 +14,7 @@ export class Shooter {
         this.bossHp = bossHp
         this.bossDamage = bossDamage
         this.game = game
+        this.gameOnPause = false;
 
         this.addShooter(); // This ensures that the shooter image is added at the start of the game
         this.animate()
@@ -129,18 +130,36 @@ export class Shooter {
 
     //Requesting AnimationFrame
     animate() {
-        this.moveShooter();
-        this.reqFrameId = requestAnimationFrame(() => this.animate())
+        if(!this.gameOnPause) {
+            this.moveShooter();
+            this.reqFrameId = requestAnimationFrame(() => this.animate())
+        }
     }
 
     stop() {
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null
-            document.removeEventListener('keydown', this.keyShoot)
-            document.removeEventListener('keydown', this.boundCheckKeysDown)
-            document.removeEventListener('keydown', this.boundCheckKeysUp)
-            this.laser.stop()
         }
+        clearInterval(this.shootingInterval)
+        this.shootingInterval = null;
+        document.removeEventListener('keydown', this.keyShoot)
+        document.removeEventListener('keydown', this.boundCheckKeysDown)
+        document.removeEventListener('keydown', this.boundCheckKeysUp)
+        this.laser.stop()
+    }
+
+    //Resumes the Shooters movement
+    resume() {
+        this.gameOnPause = false;
+        this.initEvent()
+        this.animate()
+        this.laser.resume()
+    }
+
+    // Pauses the Shooters movement
+    pause() {
+        this.gameOnPause = true;
+        this.laser.pause()
     }
 }
