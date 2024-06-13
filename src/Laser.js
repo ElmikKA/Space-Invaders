@@ -24,20 +24,39 @@ export class Laser {
         this.bossHp = bossHp
         this.bossDamage = bossDamage
         this.invaders = invaders
+
+        this.lasers = []
+
+        this.currentFrameTime = performance.now()
+        this.delta = 0
+        this.lastFrameTime = performance.now()
+    }
+
+
+    removeLaser(laser) {
+        let index = this.lasers.indexOf(laser)
+        this.lasers.splice(index, 1)
     }
 
     moveLaser() {
-        this.squares[this.currentLaserIndex].classList.remove('laser')
-        this.currentLaserIndex -= this.width;
-        if (this.currentLaserIndex >= 0) {
-            this.squares[this.currentLaserIndex].classList.add('laser')
-            this.checkCollision()
-            if (Laser.isLaserActive) {
-                this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+        let lasersToRemove = [] // in case multiple lasers have to be removed at once
+        for (let laser of this.lasers) { // moves lasers if they are in bounds
+            if (laser.coords >= 15) {
+                this.squares[laser.coords].classList.remove('laser')
+                laser.coords -= this.width;
+                this.squares[laser.coords].classList.add('laser')
+                this.checkCollision(laser)
+            } else {
+                lasersToRemove.push(laser) // if out of bounds the laser goes into remove array
             }
-        } else {
-            this.clearLaser()
-            return;
+        }
+        for (let laser of lasersToRemove) { // removes lasers that need to be removed
+            this.clearLaser(laser)
+        }
+        if (this.lasers.length > 0) { // if there are still lasers on screen it keeps going
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+        } else { // if no more active lasers it stops the animation
+            Laser.isLaserActive = false
         }
     }
 
@@ -47,15 +66,15 @@ export class Laser {
         // Only move the laser every Laser.laserSpeed frames
         if (this.frameCount % Laser.laserSpeed === 0) {
             this.moveLaser();
-        } else {
+        } else if (this.lasers.length > 0) { // if there are lasers on screen it recursively calls this function until it can move them again
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 
     //Checks if the Laser hits invader
-    checkCollision() {
-        if (this.squares[this.currentLaserIndex].classList.contains('invader')) {
-            this.squares[this.currentLaserIndex].classList.remove('laser')
+    checkCollision(laser) {
+        if (this.squares[laser.coords].classList.contains('invader')) {
+            this.squares[laser.coords].classList.remove('laser')
             if (this.boss) { // each hit on boss lowers its opacity
                 let boss = this.squares[this.alienInvaders[0]]
                 let img = boss.querySelector('img')
@@ -67,29 +86,29 @@ export class Laser {
                     this.updateBossScore()
                 }
             } else {
-                this.removeInvader()
+                this.removeInvader(laser)
             }
-            new Explosion(this.squares[this.currentLaserIndex])
+            new Explosion(this.squares[laser.coords])
             if (!this.boss) {
-                this.addRemovedInvadersIndex()
+                this.addRemovedInvadersIndex(laser)
             }
             if (!this.boss) {
                 this.updateScore()
             }
-            this.clearLaser()
+            this.clearLaser(laser)
         }
     }
 
     //Removes invader
-    removeInvader() {
-        this.squares[this.currentLaserIndex].classList.remove('invader');
-        const invaderImage = this.squares[this.currentLaserIndex].querySelector('img')
-        this.squares[this.currentLaserIndex].removeChild(invaderImage)
+    removeInvader(laser) {
+        this.squares[laser.coords].classList.remove('invader');
+        const invaderImage = this.squares[laser.coords].querySelector('img')
+        this.squares[laser.coords].removeChild(invaderImage)
     }
 
     //Adds the removed invaders index to array
-    addRemovedInvadersIndex() {
-        const alienRemoveIndex = this.alienInvaders.indexOf(this.currentLaserIndex)
+    addRemovedInvadersIndex(laser) {
+        const alienRemoveIndex = this.alienInvaders.indexOf(laser.coords)
         this.aliensRemoved.push(alienRemoveIndex)
         const aliveNum = this.alienInvadersCopy[alienRemoveIndex]
         const aliveIndex = this.aliveInvaders.indexOf(aliveNum)
@@ -102,8 +121,8 @@ export class Laser {
         const scoreDisplay = document.querySelector('.score');
         Laser.score += 100;
         scoreDisplay.textContent = Laser.score;
-        this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
     }
+    // maybe should have put these 2 together
     updateBossScore() {
         const scoreDisplay = document.querySelector('.score');
         Laser.score += 2500;
@@ -111,21 +130,25 @@ export class Laser {
     }
     //Iniziates the laser firing method
     fire() {
-        if (Laser.isLaserActive) return; // Do not fire if a laser is already active
-        Laser.isLaserActive = true; // Set the flag to true when a laser is fired
-        this.currentLaserIndex = this.shooter.currentShooterIndex;
-
-        this.frameCount = 0;// Reset the frame count
-        this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+        this.currentFrameTime = performance.now() // shooting is now based on the time since last shot
+        this.delta = this.currentFrameTime - this.lastFrameTime
+        if (this.delta >= 300) {
+            this.lastFrameTime = this.currentFrameTime
+            console.log('fire passed')
+            this.lasers.push({ coords: this.shooter.currentShooterIndex })
+            if (!Laser.isLaserActive) {
+                Laser.isLaserActive = true
+                this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
+            }
+        }
     }
 
     //Cleares laser
-    clearLaser() {
-        if (this.reqFrameId) {
-            cancelAnimationFrame(this.reqFrameId)
-            this.reqFrameId = null;
+    clearLaser(laser) {
+        if (this.squares[laser.coords]) {
+            this.squares[laser.coords].classList.remove('laser')
         }
-        Laser.isLaserActive = false;
+        this.removeLaser(laser)
     }
 
     stop() {
