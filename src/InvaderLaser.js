@@ -18,6 +18,7 @@ export class InvaderLaser {
         this.laserSpeed = laserSpeed
         this.frequency = frequency
         this.game = game
+        this.lasersToRemove = []
     }
 
     fire() {
@@ -54,7 +55,7 @@ export class InvaderLaser {
     }
 
     moveLaser() {
-        let lasersToRemove = [] // in case multiple lasers go out of bounds at once
+        this.lasersToRemove = [] // in case multiple lasers go out of bounds at once
         for (let i = 0; i < this.lasers.length; i++) {
             let laser = this.lasers[i]
             if (laser.coords < 210) {
@@ -63,10 +64,10 @@ export class InvaderLaser {
                 this.squares[laser.coords].classList.add('laser')
                 this.checkCollision(laser)
             } else {
-                lasersToRemove.push(laser) // if out of bounds it adds laser to be removed
+                this.lasersToRemove.push(laser) // if out of bounds it adds laser to be removed
             }
         }
-        for (let laser of lasersToRemove) { // removes all oob lasers
+        for (let laser of this.lasersToRemove) { // removes all oob lasers
             this.removeLaser(laser)
         }
         if (!this.dead) { // if still alive it keeps going
@@ -82,6 +83,8 @@ export class InvaderLaser {
     }
 
     removeLaser(laser) { // removes laser
+        let index = this.lasers.indexOf(laser)
+        this.lasers.splice(index, 1)
         if (this.squares[laser.coords]) {
             this.squares[laser.coords].classList.remove('laser')
         }
