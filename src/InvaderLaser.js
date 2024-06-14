@@ -1,6 +1,7 @@
 import { Explosion } from "./Explosion.js"
-export class InvaderLaser {
+import { SoundManager } from "./SoundManager.js"
 
+export class InvaderLaser {
     constructor(alienInvaders, squares, width, laserSpeed, frequency, game) {
         this.alienShooterIndex = null
         this.alienInvaders = alienInvaders
@@ -20,6 +21,7 @@ export class InvaderLaser {
         this.game = game
         this.gameOnPause = false;
         this.lasersToRemove = []
+        this.soundManager = new SoundManager();
     }
 
     fire() {
@@ -30,9 +32,7 @@ export class InvaderLaser {
         this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
         this.alienCoords = this.alienInvaders[this.alienShooterIndex]
         this.lowestIndex()
-        let music = new Audio('../sounds/invaderLaser2.wav')
-        music.volume = 0.7
-        music.play()
+        this.soundManager.playInvaderLaserSound();
         this.lasers.push({ coords: this.alienCoords })
         if (!this.reqFrameId && !this.dead && !this.gameOnPause) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())

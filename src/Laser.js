@@ -1,8 +1,5 @@
 import { Explosion } from "./Explosion.js";
-
-//Maybe
-//If the FPS drops down to 59 or lower, then the problem is with the laser movmentspeed
-
+import { SoundManager } from "./SoundManager.js";
 
 export class Laser {
     static score = 0;
@@ -25,15 +22,13 @@ export class Laser {
         this.bossDamage = bossDamage
         this.invaders = invaders
         this.gameOnPause = false;
-        
-
         this.scoreDisplay = document.querySelector('.score');
-
         this.lasers = []
-
         this.currentFrameTime = performance.now()
         this.delta = 0
         this.lastFrameTime = performance.now()
+        this.soundManager = new SoundManager();
+
     }
 
 
@@ -136,14 +131,13 @@ export class Laser {
     }
     //Iniziates the laser firing method
     fire() {
-        let music = new Audio('../sounds/laser2.wav')
-        music.volume = 0.7
+        this.soundManager.playLaserSound();
         this.currentFrameTime = performance.now() // shooting is now based on the time since last shot
         this.delta = this.currentFrameTime - this.lastFrameTime
         if (this.delta >= 300) {
             this.lastFrameTime = this.currentFrameTime
             this.lasers.push({ coords: this.shooter.currentShooterIndex })
-            music.play()
+            this.soundManager.playLaserSound();
             if (!Laser.isLaserActive) {
                 Laser.isLaserActive = true
                 this.reqFrameId = requestAnimationFrame(() => this.animateLaser())

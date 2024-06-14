@@ -1,5 +1,3 @@
-
-
 export class GameUI {
     constructor() {
         this.startScreen = document.querySelector('.start-screen');
@@ -7,7 +5,7 @@ export class GameUI {
         this.gameContent = document.querySelector('.game-content');
         this.resultScreen = document.querySelector('.result-screen');
         this.nextLevelDiv = document.querySelector('#next-level-div');
-        this.restartButton = document.querySelector('#restart');
+        this.restartButton = document.querySelector('#play-again-div');
     }
 
     //Show start screen

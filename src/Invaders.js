@@ -1,8 +1,9 @@
-import { Game } from "./Game.js";
 import { GameUI } from "./GameUI.js";
 import { InvaderLaser } from "./InvaderLaser.js";
+import { SoundManager } from "./SoundManager.js";
+
 export class Invaders {
-    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContent, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp) {
+    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContent, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp, endGame) {
         this.squares = squares;
         this.alienInvaders = alienInvaders;
         this.invaderRemoved = invaderRemoved;
@@ -20,6 +21,7 @@ export class Invaders {
         this.boss = game.boss
         this.currentBossHp = bossHp
         this.gameOnPause = false;
+        this.endGame = endGame;
 
         // stats
         this.moveInterval = movementSpeed;
@@ -28,6 +30,7 @@ export class Invaders {
 
         this.lasers = new InvaderLaser(this.alienInvaders, this.squares, this.width, this.laserSpeed, this.frequency, game)
         this.gameUI = new GameUI();
+        this.soundManager = new SoundManager();
     }
 
     // Adds invaders to the grid
@@ -145,29 +148,21 @@ export class Invaders {
     checkGameCondition() {
         this.currentShooterIndex = this.game.shooter.currentShooterIndex
         if (this.currentBossHp <= 0.00009) {
-            this.endGame('YOU HAVE WON', true)
+            this.endGame.handleWin(this.game)
         }
         if (this.invaderRemoved.length === this.alienInvaders.length) {
-            this.endGame('YOU HAVE WON', true)
+            // this.endGame('YOU HAVE WON', true)
+            this.endGame.handleWin(this.game)
         }
 
         if (this.squares[this.currentShooterIndex].classList.contains('invader')) {
-            this.endGame('YOU HAVE LOST', false)
+            this.endGame.handleLoss(this.game)
         }
 
         if (this.lasers.dead) {
-            this.endGame('YOU HAVE LOST', false)
+            // this.endGame('YOU HAVE LOST', false)
+            this.endGame.handleLoss(this.game)
         }
-    }
-    // End game message
-    endGame(message, won) {
-        this.gameUI.showResultScreen(won)
-        this.result.textContent = message
-        if(won) {
-            this.game.level += 1
-        }
-        console.log(this.game.level)
-        this.stop()
     }
 
     // Stop the movement of invaders

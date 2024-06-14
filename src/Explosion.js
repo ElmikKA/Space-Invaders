@@ -1,3 +1,5 @@
+import { SoundManager } from "./SoundManager.js";
+
 export class Explosion {
     constructor(element, boss) {
         this.element = element;
@@ -5,13 +7,12 @@ export class Explosion {
         this.startTime = null;
         this.duration = 300; // Duration of the explosion in milliseconds
         this.boss = boss
+        this.soundManager = new SoundManager()
         this.initiate();
     }
 
     initiate() {
-        let music = new Audio('../sounds/explosion2.mp3')
-        music.volume = 0.5
-        music.play()
+        this.soundManager.playExplosionSound();
         this.startAnimation();
     }
 

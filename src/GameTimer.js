@@ -1,6 +1,4 @@
-
 export class GameTimer {
-
     constructor() {
         this.startTime = null;
         this.endTime = null;
@@ -13,7 +11,6 @@ export class GameTimer {
             // Timer is already running
             return;
         }
-
         if (this.startTime === null) {
             // Timer is starting for the first time
             this.startTime = Date.now();
@@ -21,7 +18,6 @@ export class GameTimer {
             // Timer is resuming from a paused state
             this.startTime = Date.now() - this.elapsedTime * 1000;  // Adjust start time based on elapsed time
         }
-
         this.intervalId = setInterval(() => this.updateTimer(), 1000);
     }
     
