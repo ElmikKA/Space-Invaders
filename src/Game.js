@@ -5,7 +5,6 @@ import { GameTimer } from "./GameTimer.js";
 import { GameUI } from "./GameUI.js";
 
 export class Game {
-    // static level = 1
     constructor() {
         this.grid = document.querySelector('.game-board');
         this.playButton = document.getElementById('play-button');
@@ -41,12 +40,17 @@ export class Game {
 
         this.gameTimer = new GameTimer()
         this.gameUI = new GameUI()
+        this.squares = null
 
         // opponent
         this.invaderLaserSpeed = 10
-        this.invaderFrequency = 50
+        this.invaderFrequency = 100
         this.movementSpeed = 1000
         this.boss = false
+
+        // boss
+        this.bossHp = 1
+        this.bossDamage = 0.05
 
 
         this.bindEventListeners()
@@ -97,11 +101,16 @@ export class Game {
 
     startGame() {
         // Hide the start screen if it is visible
+        let backgroundMusic = document.querySelector('#audio')
+        backgroundMusic.volume = 0.4
+        backgroundMusic.play()
         this.gameUI.showStartScreen()
         this.loaderLogic()
     }
 
     loaderLogic() {
+        let beep = new Audio('../sounds/beep2.mp3')
+        beep.volume = 0.5
         this.gameUI.showLoader()
         let countdown = 3;
         // let countdown = 3;
@@ -113,8 +122,13 @@ export class Game {
             if (countdown < 0) {
                 this.gameTimer.start()
                 clearInterval(countdownInterval);
+                let beep = new Audio('../sounds/beep.mp3')
+                beep.volume = 0.5
+                beep.play()
                 this.gameUI.showGameContent()
                 this.initializeGame();
+            } else {
+                beep.play()
             }
         }, 1000);
     }
@@ -135,45 +149,47 @@ export class Game {
 
     initializeGame() {
         if (this.level != 1) {
+            // after every level it resets every eventlistener and such from previous classes
             this.restart()
         }
-        console.log('init')
-        console.log(this.level)
-        this.currentShooterIndex = 202
-        Laser.isLaserActive = false
         if (this.level === 1) {
-            console.log('level 1')
-            this.invaderLaserSpeed = 10
-            this.invaderFrequency = 50
-            this.movementSpeed = 1000
+            this.setUp()
             this.playLevel()
         } else if (this.level > 1 && this.level !== 2) {
-            console.log(`level `, this.level)
-            this.invaderLaserSpeed = (this.invaderLaserSpeed > 5) ? this.invaderLaserSpeed - 1 : (console.log('max laser speed'), this.invaderLaserSpeed)
-            this.invaderFrequency = (this.invaderFrequency > 10) ? this.invaderFrequency - 10 : (console.log('max firerate'), this.invaderFrequency) // fix freq after boss
-            this.movementSpeed = (this.movementSpeed > 500) ? this.movementSpeed - 250 : (console.log('max movement speed'), this.movementSpeed)
+            this.setUp()
             this.playLevel()
-        } else if (this.level === 2) {
-            console.log('boss level')
-            this.invaderLaserSpeed = 10
-            this.invaderFrequency = 10
-            this.movementSpeed = 1000
+        } else if (this.level === 2) { // boss is out at level 2 atm
+            this.setUp()
             this.bossLevel()
         }
     }
 
     restart() {
+        // resets everything still running
         if (this.invaders) {
             this.invaders.stop()
         }
         if (this.shooter) {
             this.shooter.stop()
         }
+        // resets game-content grid
         this.grid.innerHTML = ''
         this.invadersRemoved = []
 
         document.removeEventListener('keydown', this.shooter.checkKeys)
         document.removeEventListener('keyup', this.shooter.checkKeys)
+
+    }
+
+    setUp() {
+        // logic for harder opponents over time
+        if (this.level > 2) {
+            this.invaderLaserSpeed = (this.invaderLaserSpeed > 5) ? this.invaderLaserSpeed - 1 : this.invaderLaserSpeed
+            this.invaderFrequency = (this.invaderFrequency > 10) ? this.invaderFrequency - 10 : this.invaderFrequency
+            this.movementSpeed = (this.movementSpeed > 200) ? this.movementSpeed - 100 : this.movementSpeed
+        }
+
+        // new game-content grid
     }
 
     makeGameSquares() {
@@ -184,51 +200,57 @@ export class Game {
             this.grid.appendChild(square);
         }
 
-        const squares = Array.from(document.querySelectorAll('.game-board div'));
-        return squares
+        this.squares = Array.from(document.querySelectorAll('.game-board div'));
+        this.currentShooterIndex = 202
+        if (this.level === 1 || this.level > 2) {        return squares
     }
 
 
-    playLevel() {
+        playLevel() {
         const squares = this.makeGameSquares()
         this.alienInvaders = [
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-            15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
-            30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-        ]
-
-        // this.alienInvaders = [6]
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+                30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+            ]
+        }
+        if (this.level === 2) {
+            // different placement for boss
+            this.alienInvaders = [
+                0, 1, 2, 3, 4, 5, 6,
+                15, 16, 17, 18, 19, 20, 21,
+                30, 31, 32, 33, 34, 35, 36,
+            ]
+        }
+        // shows only game content
 
         this.gameUI.showGameContent()
 
-        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContent, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);
+
+        // if (this.level === 1) {
+        //     this.alienInvaders = [6]
+        // }
+    }
+
+    playLevel() {
+        if (this.boss) {
+            // if we came from boss it resets to correct invaderFrequency
+            this.invaderFrequency = 90
+            this.movementSpeed = 900
+            this.boss = false
+        }
+        this.invaders = new Invaders(this.squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContent, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
+        this.shooter = new Shooter(this.squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);
         this.invaders.move();
     }
 
     bossLevel() {
-        this.bossHp = 1
-        this.bossDamage = 0.3
         this.boss = true
-        this.grid.innerHTML = ''; // Clear any previous grid
-        for (let i = 0; i < this.width * this.width; i++) {
-            const square = document.createElement('div');
-            this.grid.appendChild(square);
-        }
-
-        const squares = Array.from(document.querySelectorAll('.game-board div'));
-        this.alienInvaders = [
-            0, 1, 2, 3, 4, 5, 6,
-            15, 16, 17, 18, 19, 20, 21,
-            30, 31, 32, 33, 34, 35, 36,
-        ]
-
-        this.gameUI.showGameContent()
-
-        this.invaders = new Invaders(squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContent, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
-        this.shooter = new Shooter(squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);
+        this.invaderFrequency = 10
+        this.movementSpeed = 750
+        this.invaders = new Invaders(this.squares, this.alienInvaders, this.invadersRemoved, this.width, this.currentShooterIndex, this.gameContainer, this.result, this.resultScreen, this.invaderLaserSpeed, this.invaderFrequency, this.movementSpeed, this, this.bossHp);
+        this.shooter = new Shooter(this.squares, this.currentShooterIndex, this.width, this.invadersRemoved, this, this.bossHp, this.bossDamage);
         this.invaders.move();
-
     }
 
     start() {

@@ -90,7 +90,8 @@ export class Shooter {
                 isShooting = true
                 this.shootingInterval = setInterval(() => {
                     this.laser.fire()
-                }, 300);
+                }, 150);
+
             }
         }
 

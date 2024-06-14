@@ -59,7 +59,7 @@ export class Invaders {
         const invaderImage = document.createElement('img');
         invaderImage.src = 'assets/images/invader.gif';
         invaderImage.alt = 'Invader';
-        if (this.boss) {
+        if (this.boss) { // different sizes for boss or normal invaders
             invaderImage.style.opacity = this.currentBossHp
             invaderImage.style.width = '550px';
             invaderImage.style.height = '250.33px';
@@ -143,7 +143,7 @@ export class Invaders {
 
     //Check game conditions like win or game over
     checkGameCondition() {
-        this.currentShooterIndex = this.game.shooter.currentShooterIndex // if we don't update it from the shooter class it stays 202
+        this.currentShooterIndex = this.game.shooter.currentShooterIndex
         if (this.currentBossHp <= 0.00009) {
             this.endGame('YOU HAVE WON', true)
         }
@@ -170,7 +170,7 @@ export class Invaders {
         this.stop()
     }
 
-    // Stop the movment of invaders
+    // Stop the movement of invaders
     stop() {
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)

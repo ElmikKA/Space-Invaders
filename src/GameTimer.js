@@ -1,6 +1,4 @@
 
-
-
 export class GameTimer {
 
     constructor() {
@@ -25,6 +23,11 @@ export class GameTimer {
         }
 
         this.intervalId = setInterval(() => this.updateTimer(), 1000);
+    }
+    
+    stop() {
+        this.endTime = Date.now();
+        clearInterval(this.intervalId) 
     }
 
     updateTimer() {
