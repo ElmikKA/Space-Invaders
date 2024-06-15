@@ -2,11 +2,11 @@
 export class SoundManager {
     constructor() {
         this.backgroundMusic = document.querySelector('#audio');
-        this.beepSound = new Audio('../sounds/beep2.mp3');
-        this.beepSound2 = new Audio('../sounds/beep.mp3');
-        this.explosion2 = new Audio('../sounds/explosion2.mp3')
-        this.laser2 = new Audio('../sounds/laser2.wav')
-        this.invaderLaser2 = new Audio('../sounds/invaderLaser2.wav');
+        this.beepSound = new Audio('../assets/sounds/beep2.mp3');
+        this.beepSound2 = new Audio('../assets/sounds/beep.mp3');
+        this.explosion2 = new Audio('../assets/sounds/explosion2.mp3')
+        this.laser2 = new Audio('../assets/sounds/laser2.wav')
+        this.invaderLaser2 = new Audio('../assets/sounds/invaderLaser2.wav');
         this.backgroundMusic.volume = 0.4;
         this.beepSound.volume = 0.5;
         this.beepSound2.volume = 0.5;

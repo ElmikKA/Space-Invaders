@@ -18,7 +18,6 @@ html {
     justify-content: center;
     align-items: center;
     font-family: 'Orbitron';
-
 }
 
 .hidden {
@@ -29,6 +28,30 @@ html {
     display: flex;
 }
 
+/* Button Styles */
+button {
+    margin: 5px;
+    font-size: 3em;
+    padding: 20px 50px;
+    background-color: transparent;
+    border: 5px solid #224193;
+    border-radius: 10px;
+    color: var(--clr--yellow);
+}
+
+#restart-button, #continue-game-button {
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: var(--clr--yellow);
+    color: var(--clr--dark);
+}
+
+#open-menu-button {
+    font-size: 20px;
+    padding: 0;
+}
 
 /* Dialog Styles */
 dialog {
@@ -38,16 +61,6 @@ dialog {
 dialog[open] {
     display: flex;
     animation: 2s;
-}
-
-@keyframes appear {
-    from{
-        opacity: 0;
-    }
-
-    to{
-        opacity: 1;
-    }
 }
 
 #pause-menu-dialog {
@@ -101,16 +114,6 @@ dialog[open] {
     animation-duration: calc(400s / var(--i));
 }
 
-@keyframes animate {
-    0% {
-        transform: translateY(0vh) scale(1);
-    }
-
-    100% {
-        transform: translateY(-100vh) scale(1);
-    }
-}
-
 /* Start Screen Styles and Loader*/
 .start-screen, 
 .loader {
@@ -122,82 +125,30 @@ dialog[open] {
     left: 0;
     width: 100%;
     height: 100%;
+    color: var(--clr--yellow);
     z-index: 1;
 }
 
+.start-screen h1 {
+    font-size: 8em;
+}
+
+.loader {
+    font-size: 5em;
+}
+
+
+/* Results Screen Styles */
 .result-screen {
     flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 1;
-
 }
 
 .result-screen h1 {
     font-size: 5em;
     color: var(--clr--yellow);
-}
-
-#restart-button, #continue-game-button {
-    margin: 5px;
-    font-size: 1em;
-    padding: 20px 50px;
-    background-color: transparent;
-    border: 5px solid #224193;
-    border-radius: 10px;
-    color: var(--clr--yellow);
-}
-
-#next-level {
-    margin: 5px;
-    font-size: 3em;
-    padding: 20px 50px;
-    background-color: transparent;
-    border: 5px solid #224193;
-    border-radius: 10px;
-    color: var(--clr--yellow);
-}
-
-#restart-button:hover, #continue-game-button:hover {
-    background-color: var(--clr--yellow);
-    color: var(--clr--dark);
-}
-
-#next-level:hover {
-    background-color: var(--clr--yellow);
-}
-
-.start-screen h1 {
-    font-size: 8em;
-    color: var(--clr--yellow);
-}
-
-.start-screen button,
-.result-screen button {
-    padding: 10px 20px;
-    font-size: 3em;
-    cursor: pointer;
-}
-
-#play-button {
-    font-size: 3em;
-    padding: 20px 50px;
-    background-color: transparent;
-    border: 5px solid #224193;
-    border-radius: 10px;
-    color: var(--clr--yellow);
-}
-
-#play-button:hover {
-    background-color: var(--clr--yellow);
-    color: var(--clr--dark);
-}
-
-/* Loader Styles */
-.loader {
-    font-size: 5em;
-    flex-direction: column;
-    z-index: 1;
 }
 
 /* Game Content Styles */
@@ -206,6 +157,7 @@ dialog[open] {
     height: 100%;
 }
 
+/* Game Header Styles */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -228,11 +180,9 @@ dialog[open] {
 .game-board {
     display: grid;
     grid-template-rows: repeat(15, 53.33px);
-    /* 15 rows, each 53.33px tall */
     grid-template-columns: repeat(15, 80px);
     gap: 2px;
     box-sizing: border-box;
-    /* border: solid white 1px; */
     padding: 10px;
     width: 1200px;
     height: 700px;
@@ -260,7 +210,7 @@ dialog[open] {
     animation: explode 0.3s ease-out;
 }
 
-/* Keyframes */
+/* Keyframe for Explosinon */
 @keyframes explode {
     from {
         transform: scale(1);
@@ -269,5 +219,27 @@ dialog[open] {
     to {
         transform: scale(2);
         opacity: 0;
+    }
+}
+
+/* Keyframe for Dialog */
+@keyframes appear {
+    from{
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+    }
+}
+
+/* Keyframes for Bubbles animation */
+@keyframes animate {
+    0% {
+        transform: translateY(0vh) scale(1);
+    }
+
+    100% {
+        transform: translateY(-100vh) scale(1);
     }
 }
