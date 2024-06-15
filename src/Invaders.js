@@ -63,14 +63,19 @@ export class Invaders {
         invaderImage.src = 'assets/images/invader.gif';
         invaderImage.alt = 'Invader';
         if (this.boss) { // different sizes for boss or normal invaders
-            invaderImage.style.opacity = this.currentBossHp
-            invaderImage.style.width = '550px';
-            invaderImage.style.height = '250.33px';
+            this.setInvaderImageStyle('550px', '250.33px', invaderImage, true)
         } else {
-            invaderImage.style.width = '80px';
-            invaderImage.style.height = '53.33px';
+            this.setInvaderImageStyle('80px', '53.33px', invaderImage, false)
         }
         return invaderImage
+    }
+
+    setInvaderImageStyle(width, height, invaderImage, bool) {
+        if(bool) {
+            invaderImage.style.opacity = this.currentBossHp
+        }
+        invaderImage.style.width = width;
+        invaderImage.style.height = height;
     }
 
     //Moves invaders in the grid
@@ -112,6 +117,10 @@ export class Invaders {
         const leftEdge = this.alienInvaders[0] % this.width === 0;
         const rightEdge = this.alienInvaders[this.alienInvaders.length - 1] % this.width === this.width - 1;
 
+        this.checkDirection(rightEdge, leftEdge)
+    }
+
+    checkDirection(rightEdge, leftEdge) {
         if (rightEdge && this.goingRight) {
             this.switchDirection(this.width + 1, -1, false);
         }

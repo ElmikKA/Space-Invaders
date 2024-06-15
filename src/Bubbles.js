@@ -1,5 +1,3 @@
-
-
 export class Bubbles {
     constructor(containerId, maxBubbles = 150) {
         this.bubblesContainer = document.getElementById(containerId);

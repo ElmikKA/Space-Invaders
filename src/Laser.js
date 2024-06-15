@@ -28,9 +28,7 @@ export class Laser {
         this.delta = 0
         this.lastFrameTime = performance.now()
         this.soundManager = new SoundManager();
-
     }
-
 
     removeLaser(laser) {
         let index = this.lasers.indexOf(laser)
@@ -62,7 +60,6 @@ export class Laser {
 
     animateLaser() {
         if(this.gameOnPause) return;
-
         //Increment the frame counter
         this.frameCount++;
         // Only move the laser every Laser.laserSpeed frames

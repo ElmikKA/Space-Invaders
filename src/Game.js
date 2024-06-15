@@ -130,9 +130,7 @@ export class Game {
 
     startGame() {
         // Hide the start screen if it is visible
-        let backgroundMusic = document.querySelector('#audio');
-        backgroundMusic.volume = 0.4;
-        backgroundMusic.play();
+        this.soundManager.playBackgroundMusic()
         this.gameUI.showStartScreen();
         this.loaderLogic();
     }
