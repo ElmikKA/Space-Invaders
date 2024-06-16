@@ -23,6 +23,7 @@ export class Laser {
         this.invaders = invaders;
         this.gameOnPause = false;
         this.scoreDisplay = document.querySelector('.score');
+        this.finalScoreDisplay = document.querySelector('.final-score');
         this.lasers = [];
         this.currentFrameTime = performance.now();
         this.delta = 0;
@@ -119,11 +120,13 @@ export class Laser {
     updateScore() {
         Laser.score += 100;
         this.scoreDisplay.textContent = Laser.score;
+        this.finalScoreDisplay.innerHTML = Laser.score;
     }
 
     updateBossScore() {
         Laser.score += 2500;
         this.scoreDisplay.textContent = Laser.score;
+        this.finalScoreDisplay.innerHTML = Laser.score;
     }
 
     //Iniziates the laser firing method
