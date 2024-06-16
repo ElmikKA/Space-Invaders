@@ -92,11 +92,15 @@ export class Invaders {
         this.updatePositsion()
         this.addInvaders()
         this.checkGameCondition()
-        if (!this.shooting) {
-            this.shootLaser()
-        }
+        this.shooteLaserIfNotMoving()
         if (!this.gameOnPause && this.reqFrameId) {
             this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        }
+    }
+
+    shooteLaserIfNotMoving() {
+        if (!this.shooting) {
+            this.shootLaser()
         }
     }
 

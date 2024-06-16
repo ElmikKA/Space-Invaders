@@ -10,20 +10,23 @@ export class FPSCounter {
         const currentFrameTime = performance.now();
         const delta = currentFrameTime - this.lastFrameTime;
         this.frameCount++;
+    
         if (delta >= 1000) {
             this.fps = this.frameCount;
             this.frameCount = 0;
             this.lastFrameTime = currentFrameTime;
+            document.getElementById('fps-counter').innerText = `FPS: ${this.fps}`;
         }
-        document.getElementById('fps-counter').innerText = `FPS: ${this.fps}`;
+    
         this.reqFrameId = requestAnimationFrame(() => this.updateFPS());
     }
-
+    
     start() {
         this.reqFrameId = requestAnimationFrame(() => this.updateFPS());
     }
-
+    
     stop() {
         cancelAnimationFrame(this.reqFrameId);
     }
+    
 }

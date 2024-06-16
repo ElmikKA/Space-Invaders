@@ -121,10 +121,13 @@ export class Shooter {
     }
 
     checkKeys(e, bool) {
-        if (e.key === 'ArrowLeft') {
-            this.movingLeft = bool;
-        } else if (e.key === 'ArrowRight') {
-            this.movingRight = bool;
+        switch(e.key) {
+            case 'ArrowLeft':
+                this.movingLeft = bool;
+                break;
+            case 'ArrowRight':
+                this.movingRight = bool;
+                break;
         }
     }
 
