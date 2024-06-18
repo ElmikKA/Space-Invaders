@@ -14,6 +14,7 @@ export class Shooter {
         this.bossHp = bossHp
         this.bossDamage = bossDamage
         this.game = game
+        this.gameOnPause = false;
 
         this.addShooter(); // This ensures that the shooter image is added at the start of the game
         this.animate()
@@ -38,14 +39,18 @@ export class Shooter {
         const now = Date.now();
         if (now - this.lastMoveTime < 100) return;  // Minimum 100 ms between moves
         this.lastMoveTime = now;
-        this.removeShooter()
+        this.removeShooter();
+        this.updatedShooterPositsion();
+        this.addShooter();
+    }
+
+    updatedShooterPositsion() {
         if (this.movingLeft && this.currentShooterIndex % this.width !== 0) {
             this.currentShooterIndex -= 1;
         }
         if (this.movingRight && this.currentShooterIndex % this.width < this.width - 1) {
             this.currentShooterIndex += 1;
         }
-        this.addShooter()
     }
 
     //Removing Shooter
@@ -85,8 +90,7 @@ export class Shooter {
                 isShooting = true
                 this.shootingInterval = setInterval(() => {
                     this.laser.fire()
-                }, 150);
-
+                }, 50);
             }
         }
 
@@ -117,27 +121,48 @@ export class Shooter {
     }
 
     checkKeys(e, bool) {
-        if (e.key === 'ArrowLeft') {
-            this.movingLeft = bool;
-        } else if (e.key === 'ArrowRight') {
-            this.movingRight = bool;
+        switch (e.key) {
+            case 'ArrowLeft':
+                this.movingLeft = bool;
+                break;
+            case 'ArrowRight':
+                this.movingRight = bool;
+                break;
         }
     }
 
     //Requesting AnimationFrame
     animate() {
-        this.moveShooter();
-        this.reqFrameId = requestAnimationFrame(() => this.animate())
+        if (!this.gameOnPause) {
+            this.moveShooter();
+            this.reqFrameId = requestAnimationFrame(() => this.animate())
+        }
     }
 
     stop() {
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null
-            document.removeEventListener('keydown', this.keyShoot)
-            document.removeEventListener('keydown', this.boundCheckKeysDown)
-            document.removeEventListener('keydown', this.boundCheckKeysUp)
-            this.laser.stop()
         }
+        clearInterval(this.shootingInterval)
+        this.shootingInterval = null;
+        document.removeEventListener('keydown', this.keyShoot)
+        document.removeEventListener('keydown', this.boundCheckKeysDown)
+        document.removeEventListener('keydown', this.boundCheckKeysUp)
+        this.laser.stop()
+    }
+
+    //Resumes the Shooters movement
+    resume() {
+        this.gameOnPause = false;
+        this.initEvent()
+        this.animate()
+        this.laser.resume()
+    }
+
+    // Pauses the Shooters movement
+    pause() {
+        this.gameOnPause = true;
+        this.laser.pause()
     }
 }

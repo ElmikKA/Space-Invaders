@@ -1,17 +1,77 @@
 /* Base Styles */
+:root {
+    --clr--dark: rgb(16, 24, 32);
+    --clr--light: #fff; 
+    --clr--yellow: #FEE715;
+}
+
+ /* Base Body Styles */
 body,
 html {
     padding: 0;
     margin: 0;
-    background: #101820;
-    color: white;
+    background: var(--clr--dark);
+    color: var(--clr--light);
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Orbitron';
+}
 
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: flex;
+}
+
+/* Button Styles */
+button {
+    margin: 5px;
+    font-size: 3em;
+    padding: 20px 50px;
+    background-color: transparent;
+    border: 5px solid #224193;
+    border-radius: 10px;
+    color: var(--clr--yellow);
+}
+
+#restart-button, #continue-game-button {
+    font-size: 1em;
+}
+
+button:hover {
+    background-color: var(--clr--yellow);
+    color: var(--clr--dark);
+}
+
+#open-menu-button {
+    font-size: 20px;
+    padding: 0;
+}
+
+/* Dialog Styles */
+dialog {
+    display: none;
+}
+
+dialog[open] {
+    display: flex;
+    animation: 2s;
+}
+
+#pause-menu-dialog {
+    height: 400px;
+    width: 600px;
+    background: rgb(16, 24, 32, 0.9);
+    color: var(--clr--light);
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 /* Game Container */
@@ -28,7 +88,6 @@ html {
 }
 
 /* BUBBLES */
-
 #bubbles {
     position: fixed;
     /* Ensure bubbles fill the entire viewport */
@@ -55,20 +114,9 @@ html {
     animation-duration: calc(400s / var(--i));
 }
 
-@keyframes animate {
-    0% {
-        transform: translateY(0vh) scale(1);
-    }
-
-    100% {
-        transform: translateY(-100vh) scale(1);
-    }
-}
-
-/* Start Screen Styles */
-.start-screen,
+/* Start Screen Styles and Loader*/
+.start-screen, 
 .loader {
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -77,101 +125,39 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #101820;
+    color: var(--clr--yellow);
     z-index: 1;
-}
-
-.result-screen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-
-}
-
-.result-screen h1 {
-    font-size: 5em;
-    color: #FEE715;
-}
-
-#restart-button {
-    margin: 5px;
-    font-size: 3em;
-    padding: 20px 50px;
-    background-color: transparent;
-    border: 5px solid #224193;
-    border-radius: 10px;
-    color: #FEE715;
-}
-
-#next-level {
-    margin: 5px;
-    font-size: 3em;
-    padding: 20px 50px;
-    background-color: transparent;
-    border: 5px solid #224193;
-    border-radius: 10px;
-    color: #FEE715;
-}
-
-#restart-button:hover {
-    background-color: #FEE715;
-    color: #101820;
-}
-
-#next-level:hover {
-    background-color: #FEE715;
-    color: #101820;
 }
 
 .start-screen h1 {
     font-size: 8em;
-    color: #FEE715;
 }
 
-.start-screen button,
-.result-screen button {
-    padding: 10px 20px;
-    font-size: 3em;
-    cursor: pointer;
-}
-
-#play-button {
-    font-size: 3em;
-    padding: 20px 50px;
-    background-color: transparent;
-    border: 5px solid #224193;
-    border-radius: 10px;
-    color: #FEE715;
-}
-
-#play-button:hover {
-    background-color: #FEE715;
-    color: #101820;
-}
-
-/* Loader Styles */
 .loader {
     font-size: 5em;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
 }
 
-/* Result Screen Styles */
+
+/* Results Screen Styles */
 .result-screen {
-    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.result-screen h1 {
+    font-size: 5em;
+    color: var(--clr--yellow);
 }
 
 /* Game Content Styles */
 .game-content {
-    visibility: hidden;
     width: 100%;
     height: 100%;
 }
 
+/* Game Header Styles */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -194,11 +180,9 @@ html {
 .game-board {
     display: grid;
     grid-template-rows: repeat(15, 53.33px);
-    /* 15 rows, each 53.33px tall */
     grid-template-columns: repeat(15, 80px);
     gap: 2px;
     box-sizing: border-box;
-    /* border: solid white 1px; */
     padding: 10px;
     width: 1200px;
     height: 700px;
@@ -226,7 +210,7 @@ html {
     animation: explode 0.3s ease-out;
 }
 
-/* Keyframes */
+/* Keyframe for Explosinon */
 @keyframes explode {
     from {
         transform: scale(1);
@@ -235,5 +219,27 @@ html {
     to {
         transform: scale(2);
         opacity: 0;
+    }
+}
+
+/* Keyframe for Dialog */
+@keyframes appear {
+    from{
+        opacity: 0;
+    }
+
+    to{
+        opacity: 1;
+    }
+}
+
+/* Keyframes for Bubbles animation */
+@keyframes animate {
+    0% {
+        transform: translateY(0vh) scale(1);
+    }
+
+    100% {
+        transform: translateY(-100vh) scale(1);
     }
 }

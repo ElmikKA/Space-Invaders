@@ -1,12 +1,15 @@
+import { GameUI } from "./GameUI.js";
 import { InvaderLaser } from "./InvaderLaser.js";
+import { SoundManager } from "./SoundManager.js";
+
 export class Invaders {
-    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContainer, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp) {
+    constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContent, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp, endGame) {
         this.squares = squares;
         this.alienInvaders = alienInvaders;
         this.invaderRemoved = invaderRemoved;
         this.width = width
         this.currentShooterIndex = currentShooterIndex;
-        this.gameContainer = gameContainer;
+        this.gameContent = gameContent;
         this.result = result;
         this.resultScreen = resultScreen;
         this.direction = 1;
@@ -17,6 +20,8 @@ export class Invaders {
         this.game = game
         this.boss = game.boss
         this.currentBossHp = bossHp
+        this.gameOnPause = false;
+        this.endGame = endGame;
 
         // stats
         this.moveInterval = movementSpeed;
@@ -24,6 +29,8 @@ export class Invaders {
         this.frequency = frequency
 
         this.lasers = new InvaderLaser(this.alienInvaders, this.squares, this.width, this.laserSpeed, this.frequency, game)
+        this.gameUI = new GameUI();
+        this.soundManager = new SoundManager();
     }
 
     // Adds invaders to the grid
@@ -56,18 +63,24 @@ export class Invaders {
         invaderImage.src = 'assets/images/invader.gif';
         invaderImage.alt = 'Invader';
         if (this.boss) { // different sizes for boss or normal invaders
-            invaderImage.style.opacity = this.currentBossHp
-            invaderImage.style.width = '550px';
-            invaderImage.style.height = '250.33px';
+            this.setInvaderImageStyle('550px', '250.33px', invaderImage, true)
         } else {
-            invaderImage.style.width = '80px';
-            invaderImage.style.height = '53.33px';
+            this.setInvaderImageStyle('80px', '53.33px', invaderImage, false)
         }
         return invaderImage
     }
 
+    setInvaderImageStyle(width, height, invaderImage, bool) {
+        if(bool) {
+            invaderImage.style.opacity = this.currentBossHp
+        }
+        invaderImage.style.width = width;
+        invaderImage.style.height = height;
+    }
+
     //Moves invaders in the grid
     moveInvaders() {
+        if(this.gameOnPause) return;
         const now = Date.now()
         if (now - this.lastMoveTime < this.moveInterval) {
             this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
@@ -79,11 +92,15 @@ export class Invaders {
         this.updatePositsion()
         this.addInvaders()
         this.checkGameCondition()
+        this.shooteLaserIfNotMoving()
+        if (!this.gameOnPause && this.reqFrameId) {
+            this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        }
+    }
+
+    shooteLaserIfNotMoving() {
         if (!this.shooting) {
             this.shootLaser()
-        }
-        if (this.reqFrameId) {
-            this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
         }
     }
 
@@ -104,6 +121,10 @@ export class Invaders {
         const leftEdge = this.alienInvaders[0] % this.width === 0;
         const rightEdge = this.alienInvaders[this.alienInvaders.length - 1] % this.width === this.width - 1;
 
+        this.checkDirection(rightEdge, leftEdge)
+    }
+
+    checkDirection(rightEdge, leftEdge) {
         if (rightEdge && this.goingRight) {
             this.switchDirection(this.width + 1, -1, false);
         }
@@ -131,48 +152,29 @@ export class Invaders {
 
     //Starts the movment of invaders
     move() {
-        this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        if(!this.gameOnPause) {
+            this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
+        }
     }
 
     //Check game conditions like win or game over
     checkGameCondition() {
         this.currentShooterIndex = this.game.shooter.currentShooterIndex
         if (this.currentBossHp <= 0.00009) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'none'
-            this.resultScreen.querySelector('#next-level').style.display = 'flex'
-            this.result.textContent = 'YOU HAVE WON'
-            this.game.level += 1
-            this.stop()
+            this.endGame.handleWin(this.game)
         }
         if (this.invaderRemoved.length === this.alienInvaders.length) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'none'
-            this.resultScreen.querySelector('#next-level').style.display = 'flex'
-            this.result.textContent = 'YOU HAVE WON'
-            this.game.level += 1
-            this.stop()
+            // this.endGame('YOU HAVE WON', true)
+            this.endGame.handleWin(this.game)
         }
 
         if (this.squares[this.currentShooterIndex].classList.contains('invader')) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'flex'
-            this.resultScreen.querySelector('#next-level').style.display = 'none'
-            this.result.textContent = 'GAME OVER'
-            this.lasers.dead = true
-            this.stop()
+            this.endGame.handleLoss(this.game)
         }
 
         if (this.lasers.dead) {
-            this.gameContainer.style.display = 'none';
-            this.resultScreen.style.display = 'flex';
-            this.resultScreen.querySelector('#restart').style.display = 'flex'
-            this.resultScreen.querySelector('#next-level').style.display = 'none'
-            this.result.textContent = 'GAME OVER'
-            this.stop()
+            // this.endGame('YOU HAVE LOST', false)
+            this.endGame.handleLoss(this.game)
         }
     }
 
@@ -186,7 +188,22 @@ export class Invaders {
     }
 
     shootLaser() {
-        this.lasers.fire()
-        this.shooting = true
+        if(!this.gameOnPause) {
+            this.lasers.fire()
+            this.shooting = true
+        }
+    }
+
+    //Resumes the Invaders movement
+    resume() {
+        this.gameOnPause = false;
+        this.move();
+        this.lasers.resume()
+    }
+
+    //Pauses the Invaders movement
+    pause() {
+        this.gameOnPause = true;
+        this.lasers.pause()
     }
 }

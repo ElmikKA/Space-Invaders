@@ -1,6 +1,7 @@
 import { Explosion } from "./Explosion.js"
-export class InvaderLaser {
+import { SoundManager } from "./SoundManager.js"
 
+export class InvaderLaser {
     constructor(alienInvaders, squares, width, laserSpeed, frequency, game) {
         this.alienShooterIndex = null
         this.alienInvaders = alienInvaders
@@ -18,26 +19,31 @@ export class InvaderLaser {
         this.laserSpeed = laserSpeed
         this.frequency = frequency
         this.game = game
+        this.gameOnPause = false;
         this.lasersToRemove = []
+        this.soundManager = new SoundManager();
     }
 
     fire() {
+        if(this.gameOnPause || this.dead) return;
         // picks a random alive invader and shoots from his row
         const RandomAlien = Math.floor(Math.random() * this.aliveInvaders.length)
         let alienNum = this.aliveInvaders[RandomAlien]
         this.alienShooterIndex = this.alienInvadersCopy.indexOf(alienNum)
         this.alienCoords = this.alienInvaders[this.alienShooterIndex]
         this.lowestIndex()
-        let music = new Audio('../sounds/invaderLaser2.wav')
-        music.volume = 0.7
-        music.play()
+        this.soundManager.playInvaderLaserSound();
         this.lasers.push({ coords: this.alienCoords })
-        if (!this.reqFrameId && !this.dead) {
+        if (!this.reqFrameId && !this.dead && !this.gameOnPause) {
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 
     animateLaser() {
+        if(this.gameOnPause) {
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser());
+            return;
+        }
         // different counts so the dynamic firerate based on invaders alive works
         this.frameCount++
         this.moveCount++
@@ -55,6 +61,7 @@ export class InvaderLaser {
     }
 
     moveLaser() {
+        if(this.gameOnPause) return;
         this.lasersToRemove = [] // in case multiple lasers go out of bounds at once
         for (let i = 0; i < this.lasers.length; i++) {
             let laser = this.lasers[i]
@@ -70,7 +77,7 @@ export class InvaderLaser {
         for (let laser of this.lasersToRemove) { // removes all oob lasers
             this.removeLaser(laser)
         }
-        if (!this.dead) { // if still alive it keeps going
+        if (!this.dead && !this.gameOnPause) { // if still alive it keeps going
             this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
@@ -118,6 +125,18 @@ export class InvaderLaser {
         if (this.reqFrameId) {
             cancelAnimationFrame(this.reqFrameId)
             this.reqFrameId = null
+        }
+    }
+    // Pauses the Invaders Lasers
+    pause() {
+        this.gameOnPause = true;
+    }
+
+    //Resumes the Invaders Lasers from the last point
+    resume() {
+        this.gameOnPause = false;
+        if(!this.dead && !this.reqFrameId) {
+            this.reqFrameId = requestAnimationFrame(() => this.animateLaser())
         }
     }
 }
