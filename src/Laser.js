@@ -8,7 +8,6 @@ export class Laser {
 
     constructor(width, squares, aliensRemoved, shooter, boss, bossHp, bossDamage, invaders) {
         this.shooter = shooter;
-        this.currentLaserIndex = shooter.currentShooterIndex;
         this.width = width;
         this.squares = squares;
         this.alienInvaders = invaders.lasers.alienInvaders;

@@ -19,9 +19,7 @@ export class Game {
     initializeElements() {
         this.grid = document.querySelector('.game-board');
         this.playButton = document.getElementById('play-button');
-        this.startScreen = document.querySelector('.start-screen');
         this.loader = document.getElementById('loader');
-        this.gameContent = document.querySelector('.game-content');
         this.restartButton = document.getElementById('restart-button');
         this.nextLevel = document.getElementById('next-level')
         this.resultScreen = document.querySelector('.result-screen');
@@ -38,19 +36,13 @@ export class Game {
         this.currentShooterIndex = 202;
         this.width = 15;
         this.invadersRemoved = [];
-        this.lastFrameTime = performance.now();
-        this.frameCount = 0;
-        this.fps = 0;
         this.reqFrameId = null;
         this.alienInvaders = [];
-        this.aliveInvaders = [];
-        this.alienInvadersCopy = [];
         this.invaders = null;
         this.shooter = null;
         this.bossDamage = null;
-        this.bossHp = 1,
+        this.bossHp = 1;
             this.level = 1;
-        this.pause = false;
 
         this.gameTimer = new GameTimer();
         this.gameUI = new GameUI();
@@ -136,7 +128,7 @@ export class Game {
     }
 
     loaderLogic() {
-        this.soundManager.playBeepSound2;
+        this.soundManager.playBeepSound2();
         this.gameUI.showLoader();
         let countdown = 3;
 

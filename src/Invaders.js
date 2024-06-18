@@ -9,9 +9,7 @@ export class Invaders {
         this.invaderRemoved = invaderRemoved;
         this.width = width
         this.currentShooterIndex = currentShooterIndex;
-        this.gameContent = gameContent;
         this.result = result;
-        this.resultScreen = resultScreen;
         this.direction = 1;
         this.goingRight = true;
         this.lastMoveTime = 0;
@@ -29,8 +27,6 @@ export class Invaders {
         this.frequency = frequency
 
         this.lasers = new InvaderLaser(this.alienInvaders, this.squares, this.width, this.laserSpeed, this.frequency, game)
-        this.gameUI = new GameUI();
-        this.soundManager = new SoundManager();
     }
 
     // Adds invaders to the grid
@@ -92,13 +88,13 @@ export class Invaders {
         this.updatePositsion()
         this.addInvaders()
         this.checkGameCondition()
-        this.shooteLaserIfNotMoving()
+        this.shooterLaserIfNotMoving()
         if (!this.gameOnPause && this.reqFrameId) {
             this.reqFrameId = requestAnimationFrame(() => this.moveInvaders())
         }
     }
 
-    shooteLaserIfNotMoving() {
+    shooterLaserIfNotMoving() {
         if (!this.shooting) {
             this.shootLaser()
         }
@@ -164,7 +160,6 @@ export class Invaders {
             this.endGame.handleWin(this.game)
         }
         if (this.invaderRemoved.length === this.alienInvaders.length) {
-            // this.endGame('YOU HAVE WON', true)
             this.endGame.handleWin(this.game)
         }
 
@@ -173,7 +168,6 @@ export class Invaders {
         }
 
         if (this.lasers.dead) {
-            // this.endGame('YOU HAVE LOST', false)
             this.endGame.handleLoss(this.game)
         }
     }

@@ -1,8 +1,7 @@
 
 export class EndGame {
-    constructor(gameUI, gameTimer) {
+    constructor(gameUI) {
         this.gameUI = gameUI;
-        this.gameTimer = gameTimer;
     }
 
     handleWin(game) {
@@ -15,7 +14,7 @@ export class EndGame {
 
     handleLoss(game) {
         this.gameUI.showResultScreen(false);
-        game.result.textContent = 'YOU HAVE LOST';
+        game.result.textContent = 'GAME OVER';
         this.stopGame(game);
     }
 
