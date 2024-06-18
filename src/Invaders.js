@@ -1,6 +1,4 @@
-import { GameUI } from "./GameUI.js";
 import { InvaderLaser } from "./InvaderLaser.js";
-import { SoundManager } from "./SoundManager.js";
 
 export class Invaders {
     constructor(squares, alienInvaders, invaderRemoved, width, currentShooterIndex, gameContent, result, resultScreen, laserSpeed, frequency, movementSpeed, game, bossHp, endGame) {
