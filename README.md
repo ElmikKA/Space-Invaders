@@ -24,8 +24,8 @@ To find audit steps press HERE [HERE](https://github.com/01-edu/public/tree/mast
     cd make-your-game
 ```
 
-3. Open 'index.html' in your web browser:
-    You can simply double-click the index.html file or serve it using a local web server.
+3. Open 'index.html' in your web browser using Live Server:
+    You can right-click the index.html file and select "Open with Live Server" to serve it using a local web server.
 
 
 _<sup>Made by: [KElmik](https://01.kood.tech/git/kelmik), [ureinkub](https://01.kood.tech/git/ureinkub)_</sup>
