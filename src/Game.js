@@ -1,6 +1,6 @@
 import { Invaders } from "./Invaders.js"
 import { Shooter } from "./Shooter.js"
-import { Laser } from "./Laser.js"; 
+import { Laser } from "./Laser.js";
 import { GameTimer } from "./GameTimer.js";
 import { GameUI } from "./GameUI.js";
 import { EndGame } from "./EndGame.js";
@@ -49,8 +49,8 @@ export class Game {
         this.shooter = null;
         this.bossDamage = null;
         this.bossHp = 1,
-        this.level = 1;
-        this.pause = false; 
+            this.level = 1;
+        this.pause = false;
 
         this.gameTimer = new GameTimer();
         this.gameUI = new GameUI();

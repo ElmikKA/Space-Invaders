@@ -20,22 +20,28 @@ export class SoundManager {
     }
 
     playBeepSound() {
-        this.beepSound.play();
+        this.cloneAndPlay(this.beepSound)
     }
 
     playBeepSound2() {
-        this.beepSound2.play();
+        this.cloneAndPlay(this.beepSound2)
     }
 
     playExplosionSound() {
-        this.explosion2.play();
+        this.cloneAndPlay(this.explosion2)
     }
 
     playLaserSound() {
-        this.laser2.play();
+        this.cloneAndPlay(this.laser2)
     }
 
     playInvaderLaserSound() {
-        this.invaderLaser2.play();
+        this.cloneAndPlay(this.invaderLaser2)
+    }
+
+    cloneAndPlay(audio) {
+        const clonedAudio = audio.cloneNode(true)
+        clonedAudio.volume = audio.volume
+        clonedAudio.play()
     }
 }

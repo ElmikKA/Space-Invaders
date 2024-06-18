@@ -90,7 +90,7 @@ export class Shooter {
                 isShooting = true
                 this.shootingInterval = setInterval(() => {
                     this.laser.fire()
-                }, 150);
+                }, 50);
             }
         }
 
@@ -121,7 +121,7 @@ export class Shooter {
     }
 
     checkKeys(e, bool) {
-        switch(e.key) {
+        switch (e.key) {
             case 'ArrowLeft':
                 this.movingLeft = bool;
                 break;
@@ -133,7 +133,7 @@ export class Shooter {
 
     //Requesting AnimationFrame
     animate() {
-        if(!this.gameOnPause) {
+        if (!this.gameOnPause) {
             this.moveShooter();
             this.reqFrameId = requestAnimationFrame(() => this.animate())
         }

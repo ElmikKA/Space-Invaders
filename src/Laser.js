@@ -85,6 +85,7 @@ export class Laser {
                 if (this.bossHp < 0.0005) {
                     new Explosion(this.squares[this.alienInvaders[3]], this.boss);
                     this.updateBossScore();
+                    this.gameOnPause = true
                 }
             } else {
                 this.removeInvader(laser);
@@ -116,7 +117,7 @@ export class Laser {
         this.aliveInvaders.splice(aliveIndex, 1);
     }
 
-   //Updates score
+    //Updates score
     updateScore() {
         Laser.score += 100;
         this.scoreDisplay.textContent = Laser.score;
@@ -131,12 +132,12 @@ export class Laser {
 
     //Iniziates the laser firing method
     fire() {
-        this.soundManager.playLaserSound();
         this.currentFrameTime = performance.now();
         this.delta = this.currentFrameTime - this.lastFrameTime;
         if (this.delta >= 300) {
             this.lastFrameTime = this.currentFrameTime;
             this.lasers.push({ coords: this.shooter.currentShooterIndex });
+            this.soundManager.playLaserSound();
             if (!Laser.isLaserActive) {
                 Laser.isLaserActive = true;
                 this.reqFrameId = requestAnimationFrame(() => this.animateLaser());
